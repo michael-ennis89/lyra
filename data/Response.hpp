@@ -38,7 +38,7 @@ class Response
 {
 private:
     int command;
-    int options;
+    int option;
     int item;
     int interaction;
 
