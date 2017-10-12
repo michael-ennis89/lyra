@@ -55,7 +55,7 @@ private:
 
 std::vector<Data::Item*> getItems(const int& NumberOfItems);
 std::vector<Data::Interaction*> getInteractions(const int& NumberOfInteractions);
-std::string to_string(int num);
+std::string to_string(unsigned int num);
 };
 
 #endif // GAMEDATA_H

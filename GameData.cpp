@@ -68,7 +68,7 @@ void Data::Room::loadData(const std::string& fileName) {
     }
 }
 
-std::string Data::to_string(int num) {
+std::string Data::to_string(unsigned int num) {
     std::string res = "";
     if(num==0) return "0";
     while(num){
