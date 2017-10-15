@@ -3,7 +3,7 @@
 bool getIntInput(int&);
 
 Game::Game() {
-    currentRoom = 0;
+    currentRoom = new int(0);
 }
 
 Game::~Game() {
@@ -15,6 +15,8 @@ Game::~Game() {
         delete e;
     }
     interactionsArray.clear();
+
+    delete currentRoom;
     std::cout << "Game closed!\n";
 }
 
@@ -52,9 +54,8 @@ bool Game::Initialize(int option) {
             //Load data from a default file
             bool brk = true;
             while(true) {
-                std::cout << "Please enter new profile name: ";
+                std::cout << "Please enter new profile name(no whitespaces): ";
                 std::cin>>playerName;
-                std::cin.get();
                 std::cin.get();
                 std::cin.sync();
                 //std::cin.ignore(std::string, '\n');
@@ -133,7 +134,7 @@ void Game::Run(){
     Response *parsedResponse;   // Holds parsed response from parser
 
     do{
-         switch(currentRoom)
+         switch((int)*currentRoom)
          {
          case 0:        // Harry's House
             {
@@ -207,6 +208,9 @@ void Game::Run(){
 
          std::cout << ">>";
          std::cin >> userCommand;
+         if (userCommand=="exit") {
+            break;
+         }
          // parsedResponse = parseCommand(userCommand); TODO
 
          /*if(parsedResponse->command == -1)

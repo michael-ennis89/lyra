@@ -27,7 +27,7 @@ int main() {
         }
         delete e;
     }
-    //itemsArray.clear();
+    itemsArray.clear();
     std::cout << "\n";
     std::vector<Data::Interaction*> interactionsArray = Data::getInteractions(3);
 
@@ -39,11 +39,14 @@ int main() {
         }
         delete e;
     }
-    //interactionsArray.clear();
+    interactionsArray.clear();
     delete my_room;
 
-    Game game;
-    game.Run();
+    Game* game = new Game;
+    game->Run();
+
+    //Call destructor
+    delete game;
 
     char ch; std::cin>>ch;
     return 0;
