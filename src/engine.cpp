@@ -78,8 +78,7 @@ bool Game::Initialize(int option) {
 
             //Display all available save files
             //Select a profile first
-            std::cout << "LISTING AVAILABLE PROFILES: " << std::endl;
-
+            std::cout << "LIST OF AVAILABLE PROFILES: " << std::endl;
 
             std::vector<std::string> profiles;
             std::string inputName = "";
@@ -108,10 +107,8 @@ bool Game::Initialize(int option) {
 
 
             //GET SAVE FILENAME BY playerName.
-
             //TODO
-
-
+            loadFromFile("data/" + playerName + "_save.data");
         }
 
     } catch (std::exception& ex) {
