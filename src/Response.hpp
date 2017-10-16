@@ -15,8 +15,6 @@ int option:
         2 = help
         3 = inventory
         4 = save game & quit
-    Move Command Options
-        0 ... n-1 rooms number
     Interaction Command Options
         1 = look at <interaction or item>   >> Set Item Number or Interaction Number
         2 = take <item>                     >> Set Item Number
@@ -28,6 +26,9 @@ int item:
 
 int interaction:
     0 ... n-1 Interaction Number
+
+int room:
+    0 ... n-1 Room Number
 
 */
 
@@ -41,17 +42,20 @@ private:
     int option;
     int item;
     int interaction;
+    int room;
 
 public:
     Response();
-    Response(int command, int option, int item, int interaction);
+    Response(int command, int option, int item, int room, int interaction);
     void setCommand(int command);
     void setOption(int option);
     void setItem(int item);
+    void setRoom(int room);
     void setInteraction(int interaction);
     int getCommand();
     int getOption();
     int getItem();
+    int getRoom();
     int getInteraction();
 };
 

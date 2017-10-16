@@ -5,14 +5,16 @@ Response::Response()
     setCommand(-1);
     setOption(-1);
     setItem(-1);
+    setRoom(-1);
     setInteraction(-1);
 }
 
-Response::Response(int command, int option, int item, int interaction)
+Response::Response(int command, int option, int item, int room, int interaction)
 {
     this -> command = command;
     this -> option = option;
     this -> item = item;
+    this -> room = room;
     this -> interaction = interaction;
 }
 
@@ -29,6 +31,11 @@ void Response::setOption(int option)
 void Response::setItem(int item)
 {
     this -> item = item;
+}
+
+void Response::setRoom(int room)
+{
+    this -> room = room;
 }
 
 void Response::setInteraction(int interaction)
@@ -49,6 +56,11 @@ int Response::getOption()
 int Response::getItem()
 {
     return item;
+}
+
+int Response::getRoom()
+{
+    return room;
 }
 
 int Response::getInteraction()
