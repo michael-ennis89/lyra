@@ -5,37 +5,32 @@
 #include "Response.hpp"
 #include "parser.hpp"
 
-//Parser::Parser()
-//{
-//	//instantiate a response object for the class to use??? 
-//}
+Response Parser::parse(std::string command, std::vector<std::string> inventory,std::vector<std::string> roomItems, std::vector<std::string> roomExits, std::vector<std::string> roomInteractions)
+{
+	Response responseObj;
+	Response* responsePtr = &responseObj;
+	std::string* strPtr = &command;
+	std::cout << "command is " << *strPtr << std::endl;
+	std::vector<std::string> tokens;
+	std::vector<std::string>* tokensPtr = &tokens;
+	std::vector<std::string> finalTokens;
+	std::vector<std::string>* finalPtr = &finalTokens;
+	
+	std::vector<std::string>* inventoryPtr = &inventory;
+	std::vector<std::string>* roomItemsPtr = &roomItems;
+	std::vector<std::string>* roomExitsPtr = &roomExits;
+	std::vector<std::string>* roomInteractionsPtr = &roomInteractions; 
+	Parser::stripPunc(strPtr);
+	Parser::tokenizer(strPtr, tokensPtr);
+	Parser::stripArticles(tokensPtr, finalPtr);
+	Parser::evalCommand(finalPtr, responsePtr);
+	Parser::evalOption(finalPtr, responsePtr, roomItemsPtr, roomExitsPtr, roomInteractionsPtr);
 
+	return responseObj;
 
-//Response Parse(std::string command, std::vector<std::string> inventory,
-//	std::vector<std::string> roomItems, std::vector<std::string> roomExits)
-//{
-//	Response responseObj;
-	//Response* responsePtr;
-	//std::string* strptr = &command;
-	//std::vector<std::string> tokens;
-	//std::vector<std::string>* tokensptr = &tokens;
-	//std::vector<std::string> finalTokens;
-	//std::vector<std::string>* finalptr = &finalTokens;
+}
 
-	//std::vector<std::string>* inventoryPtr= &inventory;
-	//std::vector<std::string>* roomItemsPtr= &roomItems;
-	//std::vector<std::string>* roomExitsPtr= &roomExits;
-
-	//stripPunc(strptr);
-	//tokenizer(strptr, tokensptr);
-	//stripArticles(tokensptr, finalptr);
-
-
-
-//	return responseObj;
-//}
-
-int Parser::stripPunc(std::string* inputString)
+void Parser::stripPunc(std::string* inputString)
 {
 		std::size_t position; //position within string while using find()
 		std::size_t strSize = inputString->size(); 
@@ -56,7 +51,7 @@ int Parser::stripPunc(std::string* inputString)
 		//std::cout << *inputString << std::endl; //for command line testing. remove
 }
 
-int Parser::tokenizer(std::string* inputString,	std::vector<std::string>* tokens)
+void Parser::tokenizer(std::string* inputString,	std::vector<std::string>* tokens)
 {
 
     //http://www.oopweb.com/CPP/Documents/CPPHOWTO/Volume/C++Programming-HOWTO-7.html
@@ -69,7 +64,7 @@ int Parser::tokenizer(std::string* inputString,	std::vector<std::string>* tokens
 	}
 }
 
-int Parser::stripArticles(std::vector<std::string>* tokens, std::vector<std::string>* finalTokens)
+void Parser::stripArticles(std::vector<std::string>* tokens, std::vector<std::string>* finalTokens)
 {
 		for(int i = 0; i < tokens->size(); i++)
 		{
@@ -81,7 +76,7 @@ int Parser::stripArticles(std::vector<std::string>* tokens, std::vector<std::str
 		}
 }
 
-void Parser::evalCommand(std::vector<std::string>* finalTokens, Response* responsePtr)
+void Parser::evalCommand(std::vector<std::string>*finalTokens, Response* responsePtr)
 {
 	if (finalTokens->at(0) == "look" ||
 			finalTokens->at(0) == "help" ||
@@ -101,7 +96,7 @@ void Parser::evalCommand(std::vector<std::string>* finalTokens, Response* respon
 
 }
 
-int Parser::evalOption(std::vector<std::string>* finalTokens, Response* responsePtr,
+void Parser::evalOption(std::vector<std::string>* finalTokens, Response* responsePtr,
 	std::vector<std::string>* roomItems, std::vector<std::string>* roomExits,
 	std::vector<std::string>* roomInteractions)
 {
