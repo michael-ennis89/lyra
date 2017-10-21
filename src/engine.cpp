@@ -3,7 +3,7 @@
 bool getIntInput(int&);
 
 Game::Game() {
-    currentRoom = new int(0);
+    currentRoom = 0;
 }
 
 Game::~Game() {
@@ -16,7 +16,6 @@ Game::~Game() {
     }
     interactionsArray.clear();
 
-    delete currentRoom;
     std::cout << "Game closed!\n";
 }
 
@@ -128,16 +127,26 @@ void Game::Run(){
 
     // Temp Variables
     bool voldermortAlive = true;
-    bool movedRooms;
+    bool movedRooms = true;     // Always starts out with true to load a room and printEntrance.
     bool moveLogic;
     std::string userCommand;    // Holds user commands
     Response *parsedResponse;   // Holds parsed response from parser
+    Data::Room *userRoom;
 
     do{
-         switch((int)*currentRoom)
+         switch(currentRoom)
          {
          case 0:        // Harry's House
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("0.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(-1);             // -1 = No items to ignore.
+                printExit(userRoom);
+
                 break;
             }
          case 1:        // Weasley's House
@@ -206,90 +215,127 @@ void Game::Run(){
             }
          }
 
-         std::cout << ">>";
-         std::cin >> userCommand;
-         if (userCommand=="exit") {
+        std::cout << ">>";
+        std::cin >> userCommand;
+        if (userCommand=="exit") {
             break;
-         }
-         // parsedResponse = parseCommand(userCommand); TODO
+        }
 
-         /*if(parsedResponse->command == -1)
-         {
-             std::cout << "Invalid Command, Please Try Again." << std::endl;
-             movedRooms = false;
-         }
+        parsedResponse = parseCommand(userCommand);
 
-         if(parsedResponse->command == 1)               // Basic Command
-         {
-             if(parsedResponse->option == 1)            // look Command
-             {
+        if(parsedResponse->getCommand() == -1)
+        {
+            std::cout << "Invalid Command, Please Try Again." << std::endl;
+            movedRooms = false;
+        }
 
-             }
-             else if(parsedResponse->option == 2)       // help Command
-             {
+        if(parsedResponse->getCommand() == 1)               // Basic Command
+        {
+            if(parsedResponse->getOption() == 1)            // look Command
+            {
+                userRoom->printLong();
+            }
+            else if(parsedResponse->getOption() == 2)       // help Command
+            {
+                std::cout << "Available Commands" << std::endl;
+                std::cout << "'look'                        -- Repeats room entrance. " << std::endl;
+                std::cout << "'look at <interaction>'       -- Inspects bracketed words. " << std::endl;
+                std::cout << "'take <item>'                 -- Places an item in your inventory. " << std::endl;
+                std::cout << "'drop <item>'                 -- Drops an item from your inventory. " << std::endl;
+                std::cout << "'inventory'                   -- Displays your current inventory. " << std::endl;
+                std::cout << "'cast spell at <interaction>' -- Casts a spell at the interaction. " << std::endl;
+                std::cout << "'go <location>'               -- Moves to the target location. " << std::endl;
+            }
+            else if(parsedResponse->getOption() == 3)       // inventory Command
+            {
+                std::cout << "Current Inventory" << std::endl;
+                std::cout << "--------------------" << std::endl;
+                if(items[0][0] == -1)
+                    std::cout << "Golden <Snitch>" << std::endl;
+                if(items[1][0] == -1)
+                    std::cout << "<Necklace> Horcrux" << std::endl;
+                if(items[2][0] == -1)
+                    std::cout << "<Sword> of Gryffindor" << std::endl;
+                if(items[3][0] == -1)
+                    std::cout << "Draco Malfloy's <Wand>" << std::endl;
+                if(items[4][0] == -1)
+                    std::cout << "<Chalice> Horcrux" << std::endl;
+                if(items[5][0] == -1)
+                    std::cout << "Lost <Diadem> of Ravenclaw" << std::endl;
+                if(items[6][0] == -1)
+                    std::cout << "Snape's <Memories>" << std::endl;
+                if(items[7][0] == -1)
+                    std::cout << "Resurrection <stone>" << std::endl;
 
-             }
-             else if(parsedResponse->option == 3)       // inventory Command
-             {
+                std::cout << "--------------------" << std::endl;
+            }
+            else if(parsedResponse->getOption() == 4)       // save & quit game Command
+            {
 
-             }
-             else if(parsedResponse->option == 4)       // save & quit game Command
-             {
+            }
+        }
 
-             }
-             else
-             {
+        if(parsedResponse->getCommand() == 2)               // Move Command
+        {
+            moveLogic = moveLogicCheck(parsedResponse->getRoom());
 
-             }
-         }
-
-         if(parsedResponse->command == 2)               // Move Command
-         {
-                moveLogic = moveLogicCheck(currentRoom, parsedResponse->room);
-
-                if(moveLogic == true)
+            if(moveLogic == true)
+            {
+                currentRoom = parsedResponse->getRoom();
+                userRoom->printExitLong();
+                delete userRoom;
+                movedRooms = true;
+            }
+            else
+            {
+                std::cout << "Invalid Command, Please Try Again." << std::endl;
+                movedRooms = false;
+            }
+        }
+        /*
+        if(parsedResponse->getCommand() == 3)               // Interaction Command
+        {
+            if(parsedResponse->getOption() == 1)
+            {
+                switch((int)*currentRoom)
                 {
-                    currentRoom = parsedResponse->room;
-                    movedRooms = true;
+                case 0:        // Harry's House
+                    {
+                        if(parsedResponse->getInteraction() == 0)
+                        {
+                            interactionsArray[0].printLong();
+                            interactions[0][1] = false;
+                            interactions[1][1] = true;
+                            movedRooms = false;
+                        }
+                        else if(parsedResponse->getInteraction() == 1)
+                        {
+                            interactionsArray[1].printLong();
+                            interactions[1][1] = false;
+                            roomsVisited[1][1] = true;          // Set Wesley House Available.
+                        }
+                        break;
+                    }
+                case 1:
+                    {
+                        break;
+                    }
                 }
-                else
-                {
-                    std::cout << "Invalid Command, Please Try Again." << std::endl;
-                    movedRooms = false;
-                }
-         }
+            }
+            else if(parsedResponse->getOption() == 2)
+            {
 
-         if(parsedResponse->command == 3)               // Interaction Command
-         {
-             if(parsedResponse->option == 1)            // look at <item or interaction>
-             {
-                 if((items[parsedResponse.item].location == currentRoom) && (items[parsedResponse.item].available == true))
-                 {
-                     //print item[parsedResponse.item].longDescription
-                     movedRooms = false;
-                 }
-             }
-             else if(parsedResponse->option == 2)
-             {
+            }
+            else if(parsedResponse->getOption() == 3)
+            {
 
-             }
-             else if(parsedResponse->option == 3)
-             {
+            }
+            else if(parsedResponse->getOption() == 4)
+            {
 
-             }
-             else if(parsedResponse->option == 4)
-             {
-
-             }
-             else
-             {
-
-             }
-         }
+            }
+        }
         */
-
-
-
     }while (voldermortAlive == true);
 }
 
@@ -326,9 +372,18 @@ bool getIntInput(int& var) {
     return res;
 }
 
-bool Game::moveLogicCheck(int currentRoom, int nextRoom) const
+// Phase 1 logic check for moving rooms.
+// Might add extra validation like needing items
+bool Game::moveLogicCheck(int nextRoom) const
 {
-    return false;
+    if((nextRoom == (currentRoom+1)) && (roomsVisited[currentRoom+1][1] == true))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void Game::loadDefault() {
@@ -342,4 +397,58 @@ void Game::loadFromFile(const std::string& fileName) {
 bool Game::saveGame() const {
     //Save variables to a file named <playerName>.save
 
+}
+
+// function to print any items that are placed in a room by user.
+// can disregard certain items to ensure long form is printed by switch
+void Game::printItems(int disreguard)
+{
+    int i;
+    for(i = 0; i < 8; i++)
+    {
+        if(i != disreguard)
+        {
+            if((items[i][0] == currentRoom) && (items[i][1] == true))
+            {
+                //itemsArray[i]->printShort();
+                /*Change to short non interactive form*/
+            }
+        }
+    }
+}
+
+// prints out all short interaction descriptions for the current room.
+void Game::printInteractions()
+{
+    int i;
+    for(i = 0; i < 39; i++)
+    {
+        if((interactions[i][0] == currentRoom) && (interactions[i][1] == true))
+        {
+            //interactionsArray[i]->printShort();
+        }
+    }
+}
+
+
+// prints out the short or long entrance of the current room.
+void Game::printEntrance(Data::Room *userRoom)
+{
+    if(roomsVisited[currentRoom][0] == false)
+    {
+        userRoom->printLong();
+    }
+    else
+    {
+        userRoom->printShort();
+    }
+}
+
+// prints out the short exit for the user room if available.
+void Game::printExit(Data::Room *userRoom)
+{
+    if(roomsVisited[currentRoom+1][1] == true)
+    {
+        userRoom->printExitShort();
+    }
 }
