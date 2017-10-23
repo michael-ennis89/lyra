@@ -3,7 +3,7 @@
 bool getIntInput(int&);
 
 Game::Game() {
-    currentRoom = 0;
+
 }
 
 Game::~Game() {
@@ -118,6 +118,7 @@ bool Game::Initialize(int option) {
 
     return true;
 }
+
 void Game::Run(){
 
     if (Initialize(startGame()) == false) {
@@ -151,42 +152,122 @@ void Game::Run(){
             }
          case 1:        // Weasley's House
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("1.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(0);
+                printExit(userRoom);
                 break;
             }
          case 2:        // London Diner
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("2.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(-1);
+                printExit(userRoom);
                 break;
             }
          case 3:        // Safe House
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("3.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(-1);
+                printExit(userRoom);
                 break;
             }
          case 4:        // HeadQuarters
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("4.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(1);
+                printExit(userRoom);
                 break;
             }
          case 5:        // Forest
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("5.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(2);
+                printExit(userRoom);
                 break;
             }
          case 6:        // Godric Hallow
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("6.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(-1);
+                printExit(userRoom);
                 break;
             }
          case 7:        // Malfloy Manor
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("7.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(3);
+                printExit(userRoom);
                 break;
             }
          case 8:        // Beach House
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("8.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(-1);
+                printExit(userRoom);
                 break;
             }
          case 9:        // Gringot Bank
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("9.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(4);
+                printExit(userRoom);
                 break;
             }
          case 10:       // Hogsmeade
             {
+                if(movedRooms == true)
+                {
+                    userRoom = new Data::Room("10.room");
+                    printEntrance(userRoom);
+                }
+                printInteractions();
+                printItems(-1);
+                printExit(userRoom);
                 break;
             }
          case 11:       //Room of Requirement
@@ -221,7 +302,8 @@ void Game::Run(){
             break;
         }
 
-        parsedResponse = parseCommand(userCommand);
+        //parsedResponse = parseCommand(userCommand);
+        parsedResponse = new Response();
 
         if(parsedResponse->getCommand() == -1)
         {

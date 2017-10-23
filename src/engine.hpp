@@ -1,14 +1,16 @@
-#ifndef ENGINE_H
-#define ENGINE_H
+#ifndef ENGINE_HPP
+#define ENGINE_HPP
 
-#include "GameData.hpp"
-#include "Response.hpp"
 #include<iostream>
 #include<string>
 #include<vector>
 #include<fstream>
 #include<exception>
 #include<limits>
+
+#include "GameData.hpp"
+#include "Response.hpp"
+#include "parser.hpp"
 
 class Game{
 public:
@@ -49,4 +51,4 @@ private:
 };
 
 
-#endif // ENGINE_H
+#endif // ENGINE_HPP

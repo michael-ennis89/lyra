@@ -2,11 +2,15 @@
 #include<string>
 #include<fstream>
 #include<iostream>
+
 #include "../src/GameData.hpp"
 #include "../src/engine.hpp"
+#include "../src/Response.hpp"
+#include "../src/parser.hpp"
 
 int main() {
 
+    /*
     Data::Room* my_room = new Data::Room("0.room");
 
     std::cout << "ROOM 0 Data: \n";
@@ -41,14 +45,17 @@ int main() {
     }
     interactionsArray.clear();
     delete my_room;
+    */
 
-    Game* game = new Game;
-    game->Run();
+    Game *myGame;
+    myGame = new Game();
+    myGame->Run();
 
     //Call destructor
-    delete game;
+    delete myGame;
 
     char ch; std::cin>>ch;
     return 0;
+
 }
 

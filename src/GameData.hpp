@@ -1,5 +1,5 @@
-#ifndef GAMEDATA_H
-#define GAMEDATA_H
+#ifndef GAMEDATA_HPP
+#define GAMEDATA_HPP
 
 #include <iostream>
 #include <fstream>
@@ -58,4 +58,4 @@ std::vector<Data::Interaction*> getInteractions(const int& NumberOfInteractions)
 std::string to_string(unsigned int num);
 };
 
-#endif // GAMEDATA_H
+#endif // GAMEDATA_HPP
