@@ -8,27 +8,35 @@ int command:
      1 = basic command
      2 = move command
      3 = interaction command
+     4 = item command
+     5 = spell command
+
+    Basic Command Options
+        1 = look                            >> Set option number
+        2 = help                            >> Set option number
+        3 = inventory                       >> Set option number
+        4 = save game & quit                >> Set option number
+    Move Command Options
+        N/A, Set room Number
+    Interaction Command Options
+        Look at <interaction>               >> Set Interaction Number
+    Item Command Options
+        Take <item>                         >> Set Item Number && Set Option to 1
+        Drop <item>                         >> Set Item Number && Set Option to 2
+    Spell Command Options
+        Cast spell on <interaction>         >> Set Interaction Number
 
 int option:
-    Basic Command Options
-        1 = look
-        2 = help
-        3 = inventory
-        4 = save game & quit
-    Interaction Command Options
-        1 = look at <interaction or item>   >> Set Item Number or Interaction Number
-        2 = take <item>                     >> Set Item Number
-        3 = drop <item>                     >> Set Item Number
-        4 = cast spell on <interaction>     >> Set Interaction Number
-
+    1 ... 4   Option Number
 int item:
-    0 ... n-1 Option Number
+    0 ... n-1 Item Number
 
 int interaction:
     0 ... n-1 Interaction Number
 
 int room:
     0 ... n-1 Room Number
+    -2        Previous Room
 
 */
 

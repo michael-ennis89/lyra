@@ -134,6 +134,14 @@ void Game::Run(){
     Response *parsedResponse;   // Holds parsed response from parser
     Data::Room *userRoom;
 
+    /*
+    Each Case in the function follows this general flow:
+    1: If the user just gets to the room it will allocate the room then call printEntrance() to print either long or short description.
+    2: It will print all available interactions.
+    3: It will print all items dropped in room by user that are non-native to room.
+    4: It will print any items short descriptions native to the room.
+    5: It will print the short exit if available.
+    */
     do{
          switch(currentRoom)
          {
@@ -145,9 +153,8 @@ void Game::Run(){
                     printEntrance(userRoom);
                 }
                 printInteractions();
-                printItems(-1);             // -1 = No items to ignore.
+                printItems(-1);
                 printExit(userRoom);
-
                 break;
             }
          case 1:        // Weasley's House
@@ -159,6 +166,10 @@ void Game::Run(){
                 }
                 printInteractions();
                 printItems(0);
+                if((items[0][1] == true) && (items[0][0] == 1))
+                {
+                    itemsArray[0].printShort();
+                }
                 printExit(userRoom);
                 break;
             }
@@ -195,6 +206,10 @@ void Game::Run(){
                 }
                 printInteractions();
                 printItems(1);
+                if((items[1][1] == true) && (items[1][0] == 4))
+                {
+                    itemsArray[1].printShort();
+                }
                 printExit(userRoom);
                 break;
             }
@@ -207,6 +222,10 @@ void Game::Run(){
                 }
                 printInteractions();
                 printItems(2);
+                if((items[2][1] == true) && (items[2][0] == 5))
+                {
+                    itemsArray[2].printShort();
+                }
                 printExit(userRoom);
                 break;
             }
@@ -231,6 +250,10 @@ void Game::Run(){
                 }
                 printInteractions();
                 printItems(3);
+                if((items[3][1] == true) && (items[3][0] == 7))
+                {
+                    itemsArray[3].printShort();
+                }
                 printExit(userRoom);
                 break;
             }
@@ -255,6 +278,10 @@ void Game::Run(){
                 }
                 printInteractions();
                 printItems(4);
+                if((items[4][1] == true) && (items[4][0] == 9))
+                {
+                    itemsArray[4].printShort();
+                }
                 printExit(userRoom);
                 break;
             }
@@ -351,22 +378,30 @@ void Game::Run(){
 
                 std::cout << "--------------------" << std::endl;
             }
-            else if(parsedResponse->getOption() == 4)       // save & quit game Command
+            else if(parsedResponse->getOption() == 4)                       // save & quit game Command
             {
 
             }
         }
 
-        if(parsedResponse->getCommand() == 2)               // Move Command
+        if(parsedResponse->getCommand() == 2)                               // Move Command
         {
             moveLogic = moveLogicCheck(parsedResponse->getRoom());
 
             if(moveLogic == true)
             {
-                currentRoom = parsedResponse->getRoom();
+                if(parsedResponse->getRoom() == -2)
+                {
+                    currentRoom = currentRoom -1;                           // If -2 and available, go back 1 room.
+                }
+                else
+                {
+                    currentRoom = parsedResponse->getRoom();                // Else set room to room requested.
+                }
+
                 userRoom->printExitLong();
-                delete userRoom;
-                movedRooms = true;
+                delete userRoom;                                            // Delete current room so can reallocate
+                movedRooms = true;                                          // Room moved is true.
             }
             else
             {
@@ -374,50 +409,202 @@ void Game::Run(){
                 movedRooms = false;
             }
         }
-        /*
-        if(parsedResponse->getCommand() == 3)               // Interaction Command
+
+        if(parsedResponse->getCommand() == 3)                               // Interaction Command
         {
-            if(parsedResponse->getOption() == 1)
-            {
-                switch((int)*currentRoom)
+                switch(currentRoom)
                 {
                 case 0:        // Harry's House
                     {
-                        if(parsedResponse->getInteraction() == 0)
+                        if(parsedResponse->getInteraction() == 0)           // If interaction 1 <potion>
                         {
-                            interactionsArray[0].printLong();
-                            interactions[0][1] = false;
-                            interactions[1][1] = true;
+                            interactionsArray[0].printLong();               // Print long <potion>
+                            interactions[0][1] = false;                     // Set <potion> availability to false.
+                            interactions[1][1] = true;                      // Set <clothes> availability to true.
                             movedRooms = false;
                         }
                         else if(parsedResponse->getInteraction() == 1)
                         {
-                            interactionsArray[1].printLong();
-                            interactions[1][1] = false;
-                            roomsVisited[1][1] = true;          // Set Wesley House Available.
+                            interactionsArray[1].printLong();               // Print Long <clothes>
+                            interactions[1][1] = false;                     // Set <clothes> availability to false.
+                            roomsVisited[1][1] = true;                      // Set Wesley House Available.
                         }
                         break;
                     }
                 case 1:
                     {
+                        if(parsedResponse->getInteraction() == 2)
+                        {
+                            interactionsArray[2].printLong();               // Print long <will>
+                            interactions[2][1] = false;                     // Set <will> availability to false.
+                            items[0][1] = true;                             // Set <wedding> availability to true.
+                            movedRooms = false;
+                        }
+                        else if(parsedResponse->getInteraction() == 3)
+                        {
+                            interactionsArray[3].printLong();               // Print long <wedding>
+                            interactions[2][1] = false;                     // Set <wedding> availability to false.
+                            roomsVisited[2][1] = true;                      // Set London Diner Available.
+                            movedRooms = false;
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+                        if(parsedResponse->getInteraction() == 4)
+                        {
+                            interactionsArray[4].printLong();               // Print long <server>
+                            interactions[4][1] = false;                     // Set <server> availability to false.
+                            interactions[5][1] = true;                      // Set <deatheater> availability to true.
+                            movedRooms = false;
+                        }
+                        else if(parsedResponse->getInteraction() == 5)
+                        {
+                            interactionsArray[5].printLong();               // Print long <deatheater>
+                            interactions[5][1] = false;                     // Set <deatheater> availability to false.
+                            roomsVisited[3][1] = true;                      // Set Safe House available.
+                            movedRooms = false;
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        if(parsedResponse->getInteraction() == 6)
+                        {
+                            interactionsArray[6].printLong();               // Print long <cupboard>
+                            interactions[6][1] = false;                     // Set <cupboard> availability to false.
+                            interactions[7][1] = true;                      // Set <Mundungus> availability to true.
+                            movedRooms = false;
+                        }
+                        else if(parsedResponse->getInteraction() == 7)
+                        {
+                            interactionsArray[7].printLong();               // Print long <Mundungus>
+                            interactions[7][1] = false;                     // Set <Mundungus> availability to false.
+                            roomsVisited[4][1] = true;                      // Set Headquarters to Available
+                            movedRooms = false;
+                        }
+                        break;
+                    }
+                case 4:
+                    {
+                        if(parsedResponse->getInteraction() == 8)
+                        {
+                            interactionsArray[8].printLong();               // Print long <toilet>
+                            interactions[8][1] = false;                     // Set <toilet> availability to false.
+                            interactions[9][1] = true;                      // Set <elevator> availability to true.
+                            movedRooms = false;
+                        }
+                        else if(parsedResponse->getInteraction() == 9)
+                        {
+                            interactionsArray[9].printLong();               // Print long <elevator>
+                            interactions[9][1] = false;                     // Set <elevator> availability to false.
+                            interactions[10][1] = true;                     // Set <dolores> availability to true.
+                            movedRooms = false;
+                        }
+                        else if(parsedResponse->getInteraction() == 10)
+                        {
+                            interactionsArray[10].printLong();              // Print long <dolores>
+                            interactions[10][1] = false;                    // Set <dolores> availability to false.
+                            items[1][1] = true;                             // Set Necklace available.
+                            movedRooms = false;
+                        }
+                        break;
+                    }
+                case 5:
+                    {
+                        if(parsedResponse->getInteraction() == 11)
+                        {
+                            interactionsArray[11].printLong();              // Print long <tent>
+                            interactions[11][1] = false;                    // Set <tent> availability to false.
+                            interactions[12][1] = true;                     // Set <patronus> availability to true.
+                            movedRooms = false;
+                        }
+                        else if(parsedResponse->getInteraction() == 12)
+                        {
+                            interactionsArray[12].printLong();              // Print long <patronus>
+                            interactions[12][1] = false;                    // Set <patronus> availability to false.
+                            interactions[13][1] = true;                     // Set <lake> availability to true.
+                            movedRooms = false;
+                        }
+                        else if(parsedResponse->getInteraction() == 13)
+                        {
+                            interactionsArray[12].printLong();              // Print long <lake>
+                            interactions[13][1] = false;                    // Set <lake> availability to false.
+                            items[2][1] = true;                             // Set <sword> availability to true.
+                            movedRooms = false;
+                        }
+                        else if(parsedResponse->getInteraction() == 14)
+                        {
+                            interactionsArray[14].printLong();              // Print long <horcrux>
+                            interactions[14][1] = false;                    // Set <horcrux> availability to false.
+                            roomsVisited[6][1] = true;                      // Set Godrics Hallow to Available
+                            movedRooms = false;
+                        }
+                        break;
+                    }
+                case 6:
+                    {
+                        break;
+                    }
+                case 7:
+                    {
+                        break;
+                    }
+                case 8:
+                    {
+                        break;
+                    }
+                case 9:
+                    {
+                        break;
+                    }
+                case 10:
+                    {
                         break;
                     }
                 }
-            }
-            else if(parsedResponse->getOption() == 2)
-            {
-
-            }
-            else if(parsedResponse->getOption() == 3)
-            {
-
-            }
-            else if(parsedResponse->getOption() == 4)
-            {
-
-            }
         }
-        */
+
+        if(parsedResponse->getCommand() == 4)                               // Item Command
+        {
+                if(parsedResponse->getOption() ==1)                         // Get Item Command
+                {
+                    /* Need to make switch for all 8 items */
+                }
+                else if(parsedResponse->getOption() == 2)                   // Drop Item Command
+                {
+                    if(items[parsedResponse->getItem()][0] == -1)           // If item current location is in the inventory
+                    {
+                        items[parsedResponse->getItem()][0] = currentRoom;  // Items new current location is the current room.
+                        if(parsedResponse->getItem() == 0)                  // Print what item they dropped.
+                            std::cout << "You dropped the Golden <snitch>." << std::endl;
+                        else if(parsedResponse->getItem() == 1)
+                            std::cout << "You dropped the <Necklace> Horcrux." << std::endl;
+                        else if(parsedResponse->getItem() == 2)
+                            std::cout << "You dropped the <Sword> of Gryffindor." << std::endl;
+                        else if(parsedResponse->getItem() == 3)
+                            std::cout << "You dropped Draco Malfloy's <wand>." << std::endl;
+                        else if(parsedResponse->getItem() == 4)
+                            std::cout << "You dropped the <chalice> Horcrux." << std::endl;
+                        else if(parsedResponse->getItem() == 5)
+                            std::cout << "You dropped the <Diadem> of Ravenclaw" << std::endl;
+                        else if(parsedResponse->getItem() == 6)
+                            std::cout << "You dropped Snape's <memories>." << std::endl;
+                        else if(parsedResponse->getItem() == 7)
+                            std::cout << "You dropped the Resurrection <Stone>." << std::endl;
+                    }
+                    else
+                    {
+                        std::cout << "This item is not in your inventory." << std::endl;
+                    }
+                }
+        }
+
+        if(parsedResponse->getCommand() == 5)                               // Spell Command
+        {
+
+        }
+
     }while (voldermortAlive == true);
 }
 
@@ -455,10 +642,16 @@ bool getIntInput(int& var) {
 }
 
 // Phase 1 logic check for moving rooms.
-// Might add extra validation like needing items
+// Checks if nextRoom is either current room +1 or -1.
+// Checks if nexRoom is available and returns true if both conditions are satisfied.
+// False otherwise.
 bool Game::moveLogicCheck(int nextRoom) const
 {
     if((nextRoom == (currentRoom+1)) && (roomsVisited[currentRoom+1][1] == true))
+    {
+        return true;
+    }
+    else if((nextRoom == (currentRoom-1)) && (roomsVisited[currentRoom-1][1] == true))
     {
         return true;
     }
