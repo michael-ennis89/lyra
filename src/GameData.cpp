@@ -18,6 +18,13 @@ void Data::Room::printExitShort() const {
     printV(short_exit_desc);
 }
 
+void Data::Item::printPickup() const {
+    printV(pickup_desc);
+}
+void Data::Item::printDrop() const {
+    printV(drop_desc);
+}
+
 void Data::GameData::setState(const bool& isOk) {
     isGood=isOk;
 }
@@ -26,45 +33,46 @@ bool Data::GameData::good() const {
     return isGood;
 }
 
+bool openFile(const std::string& fileName, std::ifstream& ifs) {
+    ifs.open("data/" + fileName, std::ios_base::in);
+    return ifs.good();
+}
+
 void Data::GameData::loadData(const std::string& fileName) {
-    std::ifstream fileStream("data/" + fileName, std::ios_base::in);
-    if(!fileStream.good()) {
-        setState(false);
-    } else {
+    std::ifstream fileStream;
+    setState(openFile(fileName, fileStream));
 
-        /*
-        FILE FORMAT:
-            Short Description Entrance
-            Long Description Entrance
-        */
-
+    if(good()) {
         std::getline(fileStream, short_desc);
         std::getline(fileStream, long_desc);
         fileStream.close();
-        setState(true);
     }
+
 }
 
 void Data::Room::loadData(const std::string& fileName) {
-    std::ifstream fileStream("data/" + fileName, std::ios_base::in);
-    if(!fileStream.good()) {
-        setState(false);
-    } else {
+    std::ifstream fileStream;
+    setState(openFile(fileName, fileStream));
 
-        /*
-        FILE FORMAT:
-            Short Description Entrance
-            Long Description Entrance
-            Short Description Exit
-            Long Description Exit
-        */
+    if(good()) {
         std::getline(fileStream, short_desc);
         std::getline(fileStream, long_desc);
         std::getline(fileStream, short_exit_desc);
         std::getline(fileStream, long_exit_desc);
-
         fileStream.close();
-        setState(true);
+    }
+}
+
+void Data::Item::loadData(const std::string& fileName) {
+    std::ifstream fileStream;
+    setState(openFile(fileName, fileStream));
+
+    if(good()) {
+        std::getline(fileStream, short_desc);
+        std::getline(fileStream, long_desc);
+        std::getline(fileStream, pickup_desc);
+        std::getline(fileStream, drop_desc);
+        fileStream.close();
     }
 }
 

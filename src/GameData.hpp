@@ -7,6 +7,31 @@
 #include <string>
 #include <algorithm>
 
+
+
+    /*
+    FILE FORMAT: Interaction
+        Short Description Entrance
+        Long Description Entrance
+
+
+    FILE FORMAT: Room
+        Short Description Entrance
+        Long Description Entrance
+        Short Description Exit
+        Long Description Exit
+
+
+    FILE FORMAT: Item
+        Short Description Entrance
+        Long Description Entrance
+        Pickup Description
+        Drop Description
+
+    */
+
+
+
 namespace Data{
 
 class GameData {
@@ -35,7 +60,7 @@ public:
 	Room(const std::string& fileName) { loadData(fileName); };
 	void printExitShort() const;
 	void printExitLong() const;
-	void loadData(const std::string& fileName);
+	void loadData(const std::string& fileName) override;
 private:
 	std::string short_exit_desc;
 	std::string long_exit_desc;
@@ -44,7 +69,12 @@ private:
 class Item : public GameData {
 public:
 	Item(const std::string& fileName) { loadData(fileName); }
+	void printPickup() const;
+	void printDrop() const;
+	void loadData(const std::string&) override;
 private:
+    std::string pickup_desc;
+    std::string drop_desc;
 };
 
 class Interaction : public GameData {
@@ -56,6 +86,6 @@ private:
 std::vector<Data::Item*> getItems(const int& NumberOfItems);
 std::vector<Data::Interaction*> getInteractions(const int& NumberOfInteractions);
 std::string to_string(unsigned int num);
-}
+};
 
 #endif // GAMEDATA_HPP
