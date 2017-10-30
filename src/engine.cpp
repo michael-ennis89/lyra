@@ -45,7 +45,7 @@ bool Game::Initialize(int option) {
 
         //Initialize all interactions and items
         itemsArray=Data::getItems(3);
-        interactionsArray=Data::getInteractions(3);
+        interactionsArray=Data::getInteractions(15);
 
 
         if (option==1) {
@@ -71,6 +71,7 @@ bool Game::Initialize(int option) {
             }
 
             std::cout << "Hello " << playerName << ". Welcome to the Horcrux!" << std::endl;
+            std::cout << "For a list of commands type 'help'" << std::endl;
 
             loadDefault();
         }else if (option==2) {
@@ -134,6 +135,7 @@ void Game::Run(){
     std::string userCommand;    // Holds user commands
     Response *parsedResponse;   // Holds parsed response from parser
     Data::Room *userRoom;
+    Parser myParser;
 
     /*
     Each Case in the function follows this general flow:
@@ -327,6 +329,7 @@ void Game::Run(){
         getline( std::cin, userCommand);
 
         // Pre parse command for exit
+        /*
         if (userCommand=="exit") {
             std::cout << "Do you want to save first? Y/N " << std::endl;
             std::cin >> userCommand;
@@ -344,9 +347,11 @@ void Game::Run(){
                 std::cout << "Invalid Command" << std::endl;
             }
         }
+        */
 
         //parsedResponse = parseCommand(userCommand);
-        parsedResponse = new Response();
+        Response testResponse = myParser.parse(userCommand);
+        parsedResponse = &testResponse;
 
         if(parsedResponse->getCommand() == -1)
         {
@@ -419,6 +424,7 @@ void Game::Run(){
                 }
 
                 userRoom->printExitLong();
+                std::cout << std::endl;
                 delete userRoom;                                            // Delete current room so can reallocate
                 movedRooms = true;                                          // Room moved is true.
             }
@@ -435,17 +441,17 @@ void Game::Run(){
                 {
                 case 0:        // Harry's House
                     {
-                        if(parsedResponse->getInteraction() == 0)           // If interaction 1 <potion>
+                        if((parsedResponse->getInteraction() == 0) && (interactions[0][1] == 1)) // If interaction 1 <potion>
                         {
                             interactionsArray[0]->printLong();               // Print long <potion>
-                            interactions[0][1] = false;                     // Set <potion> availability to false.
-                            interactions[1][1] = true;                      // Set <clothes> availability to true.
+                            interactions[0][1] = 0;                         // Set <potion> availability to false.
+                            interactions[1][1] = 1;                         // Set <clothes> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 1)
+                        else if((parsedResponse->getInteraction() == 1) && (interactions[1][1] == 1))
                         {
                             interactionsArray[1]->printLong();               // Print Long <clothes>
-                            interactions[1][1] = false;                     // Set <clothes> availability to false.
-                            roomsVisited[1][1] = true;                      // Set Wesley House Available.
+                            interactions[1][1] = 0;                         // Set <clothes> availability to false.
+                            roomsVisited[1][1] = 1;                         // Set Wesley House Available.
                         }
                         break;
                     }
@@ -509,12 +515,6 @@ void Game::Run(){
                             interactions[9][1] = false;                     // Set <elevator> availability to false.
                             interactions[10][1] = true;                     // Set <dolores> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 10)
-                        {
-                            interactionsArray[10]->printLong();              // Print long <dolores>
-                            interactions[10][1] = false;                    // Set <dolores> availability to false.
-                            items[1][1] = true;                             // Set Necklace available.
-                        }
                         break;
                     }
                 case 5:
@@ -531,7 +531,7 @@ void Game::Run(){
                         }
                         else if(parsedResponse->getInteraction() == 13)
                         {
-                            interactionsArray[12]->printLong();              // Print long <lake>
+                            interactionsArray[13]->printLong();              // Print long <lake>
                             interactions[13][1] = false;                    // Set <lake> availability to false.
                             items[2][1] = true;                             // Set <sword> availability to true.
                         }
@@ -542,6 +542,8 @@ void Game::Run(){
                                 interactionsArray[14]->printLong();              // Print long <horcrux>
                                 interactions[14][1] = false;                    // Set <horcrux> availability to false.
                                 roomsVisited[6][1] = true;                      // Set Godrics Hallow to Available
+                                std::cout << "You have reached the end of current development. Exiting" << std::endl;
+                                exit(0);
                             }
                             else
                             {
@@ -602,6 +604,7 @@ void Game::Run(){
                             {
                                 std::cout << "The Golden <snitch> is already in your inventory." << std::endl;
                             }
+                            break;
                         }
                     case 1:
                         {
@@ -622,6 +625,7 @@ void Game::Run(){
                             {
                                 std::cout << "The <necklace> is already in your inventory." << std::endl;
                             }
+                            break;
                         }
                     case 2:
                         {
@@ -642,6 +646,7 @@ void Game::Run(){
                             {
                                 std::cout << "The <Sword> of Gryffindor is already in your inventory." << std::endl;
                             }
+                            break;
                         }
                     }
 
@@ -691,12 +696,20 @@ void Game::Run(){
                     movedRooms = false;
                     break;
                 }
+            case 10:
+                {
+                    interactionsArray[10]->printLong();              // Print long <dolores>
+                    interactions[10][1] = false;                    // Set <dolores> availability to false.
+                    items[1][1] = true;                             // Set Necklace available.
+                    break;
+                }
             case 11:
                 {
                     interactionsArray[11]->printLong();              // Print long <tent>
                     interactions[11][1] = false;                    // Set <tent> availability to false.
                     interactions[12][1] = true;                     // Set <patronus> availability to true.
                     movedRooms = false;
+                    break;
                 }
             }
         }
@@ -763,9 +776,9 @@ void Game::loadDefault() {
 
     if (!fileStream.is_open()) {
         std::ofstream OFS("data/default.dat", std::ios_base::out);
-        OFS<<"0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 1 0 1\r\n";
+        OFS<<"0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 1 0 1\r\n";
         OFS<<"1 0 4 0 5 0 7 0 9 0 11 0 14 0 16 0\r\n";
-        OFS<<"0 1 1 0 2 1 3 0 4 1 5 0 6 1 7 0 8 1 9 0 10 0 11 1 12 0 13 0 14 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+        OFS<<"0 1 0 0 2 1 3 0 4 1 5 0 6 1 7 0 8 1 9 0 10 0 11 1 12 0 13 0 14 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         OFS.close();
         fileStream.open("data/default.dat");
         if(!fileStream.is_open()) {
@@ -773,13 +786,10 @@ void Game::loadDefault() {
         }
     }
 
-
-
-
     // hard coded variable initialization until init from file is implemented.
     int i = 0;
     // set all rooms unavailable and not visited at start.
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < 17; i++)
     {
         int a;
         bool b;
@@ -810,6 +820,7 @@ void Game::loadDefault() {
 
 
     fileStream.close();
+    currentRoom = 0;
 }
 
 void Game::loadFromFile(const std::string& fileName) {
@@ -825,13 +836,14 @@ bool Game::saveGame() const {
 void Game::printItems(int disreguard)
 {
     int i;
-    for(i = 0; i < 8; i++)
+    //for(i = 0; i < 8; i++)
+    for(i = 0; i < 3; i++)     // set to 3 because only 3 items right now.
     {
         if(i != disreguard)
         {
             if((items[i][0] == currentRoom) && (items[i][1] == true))
             {
-                //itemsArray[i]->printShort();
+                itemsArray[i]->printPickup();
                 /*Change to short non interactive form*/
             }
         }
@@ -844,11 +856,12 @@ void Game::printItems(int disreguard)
 void Game::printInteractions()
 {
     int i;
-    for(i = 0; i < 39; i++)
+    //for(i = 0; i < 39; i++)
+    for(i = 0; i < 15; i++)     // set to 15 because there are only 15 interactions complete right now.
     {
-        if((interactions[i][0] == currentRoom) && (interactions[i][1] == true))
+        if((interactions[i][0] == currentRoom) && (interactions[i][1] == 1))
         {
-            //interactionsArray[i]->printShort();
+            interactionsArray[i]->printShort();
         }
 
     }
@@ -859,7 +872,7 @@ void Game::printInteractions()
 // prints out the short or long entrance of the current room.
 void Game::printEntrance(Data::Room *userRoom)
 {
-    if(roomsVisited[currentRoom][0] == false)
+    if(roomsVisited[currentRoom][0] == 0)
     {
         userRoom->printLong();
     }
@@ -872,7 +885,7 @@ void Game::printEntrance(Data::Room *userRoom)
 // prints out the short exit for the user room if available.
 void Game::printExit(Data::Room *userRoom)
 {
-    if(roomsVisited[currentRoom+1][1] == true)
+    if(roomsVisited[currentRoom+1][1] == 1)
     {
         userRoom->printExitShort();
     }

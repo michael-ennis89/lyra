@@ -28,7 +28,7 @@ Response Parser::parse(std::string command)
 void Parser::stripPunc(std::string* inputString)
 {
 		std::size_t position; //position within string while using find()
-		std::size_t strSize = inputString->size(); 
+		std::size_t strSize = inputString->size();
 		std::string punctuation[3] = {"?",".","!"}; //punctuation to remove
 		for(int i = 0; i <3; i++)
 		{
@@ -40,9 +40,9 @@ void Parser::stripPunc(std::string* inputString)
 					inputString->replace(position, 1, " ");
 				}
 			} while(position < strSize);
-		
+
 		}
-		
+
 		//std::cout << *inputString << std::endl; //for command line testing. remove
 }
 
@@ -63,7 +63,7 @@ void Parser::stripArticles(std::vector<std::string>* tokens, std::vector<std::st
 {
 		for(int i = 0; i < tokens->size(); i++)
 		{
-			if (tokens->at(i) != "the" && tokens->at(i) != "a" && tokens->at(i) != "an") 
+			if (tokens->at(i) != "the" && tokens->at(i) != "a" && tokens->at(i) != "an")
 			{
 				finalTokens->push_back(tokens->at(i));
 				//std::cout << tokens->at(i) << std::endl;
@@ -99,7 +99,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 	{
 		if (finalTokens->at(0) == "look")
 		{responsePtr->setOption(1);}
-	
+
 		if (finalTokens->at(0) == "help")
 		{responsePtr->setOption(2);}
 
@@ -125,7 +125,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
     		{responsePtr->setRoom(3);}
 			if(finalTokens->at(index) == "godric\'s" && finalTokens->at(index+1) == "hallow")
 			{responsePtr->setRoom(6);}
-			if(finalTokens->at(index) == "malfloy" && finalTokens->at(index+1) == "manor")	
+			if(finalTokens->at(index) == "malfloy" && finalTokens->at(index+1) == "manor")
 			{responsePtr->setRoom(7);}
 			if(finalTokens->at(index) == "beach" && finalTokens->at(index+1) == "house")
 			{responsePtr->setRoom(8);}
@@ -146,12 +146,18 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 		}
 
-		if(finalTokens->at(index) == "burrow") //parser removes "the"
+		if(finalTokens->at(index) == "motorcycle")  //changed to motorcycle instead of the burrow
 		{responsePtr->setRoom(1);}
+		if(finalTokens->at(index) == "away")        // added in addition to london diner
+        {responsePtr->setRoom(2);}
+        if(finalTokens->at(index) == "safe")        // added in addition to safe house
+        {responsePtr->setRoom(3);}
 		if(finalTokens->at(index) == "headquarters")
 		{responsePtr->setRoom(4);}
-		if(finalTokens->at(index) == "forest")
+		if(finalTokens->at(index) == "fireplace")   // changed to fireplace instead of forest
 		{responsePtr->setRoom(5);}
+		if(finalTokens->at(index) == "hollow")      // added in addition to godrics hallow
+        {responsePtr->setRoom(6);}
 		if(finalTokens->at(index) == "hogsmeade")
 		{responsePtr->setRoom(10);}
 		if(finalTokens->at(index) == "courtyard")
@@ -177,16 +183,18 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 			if (finalTokens->at(2) == "death" && finalTokens->at(3) == "eater")
 			{responsePtr->setInteraction(5);}
 		}
+		if (finalTokens->at(2) == "deatheater")
+        {responsePtr->setInteraction(5);}
 		if (finalTokens->at(2) == "cupboard")
 		{responsePtr->setInteraction(6);}
-		if (finalTokens->at(2) == "mundungus")
+		if ((finalTokens->at(2) == "mundungus") || (finalTokens->at(2) == "Mundungus"))     // added Mundungus
 		{responsePtr->setInteraction(7);}
 		if (finalTokens->at(2) == "toilet")
 		{responsePtr->setInteraction(8);}
 		if (finalTokens->at(2) == "elevator")
 		{responsePtr->setInteraction(9);}
-		if (finalTokens->at(2) == "dolores")
-		{responsePtr->setInteraction(10);}
+		//if (finalTokens->at(2) == "dolores")      // changed to spell interaction
+		//{responsePtr->setInteraction(10);}
 		if (finalTokens->at(2) == "tent")
 		{responsePtr->setInteraction(11);}
 		if (finalTokens->at(2) == "patronus")
@@ -238,8 +246,15 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		if(finalTokens->at(3) == "death" && finalTokens->at(4) == "eater")
 		{responsePtr->setInteraction(5);}
 
+		if(finalTokens->at(3) == "deatheater")
+        {responsePtr->setInteraction(5);}     // added single word form of death eater.
+
+        if((finalTokens->at(3) == "dolores") || (finalTokens->at(3) == "Dolores"))     // changed dolores to a spell instead of a look at interaction
+        {responsePtr->setInteraction(10);}
+
 		if(finalTokens->at(3) == "tent")
 		{responsePtr->setInteraction(11);}
 
-	}	
+
+	}
 }
