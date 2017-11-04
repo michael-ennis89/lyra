@@ -73,73 +73,87 @@ void Parser::stripArticles(std::vector<std::string>* tokens, std::vector<std::st
 
 void Parser::evalCommand(std::vector<std::string>*finalTokens, Response* responsePtr)
 {
+	int tokensSize = finalTokens->size();
+	if (tokensSize <=0) //if no tokens, don't try to access them
+	{return;} 
 	if (finalTokens->at(0) == "look" ||
 			finalTokens->at(0) == "help" ||
 			finalTokens->at(0) == "inventory" ||
 			finalTokens->at(0) == "save")
 	{responsePtr->setCommand(1);}
 
-	if (finalTokens->at(0) == "go")
+	else if (finalTokens->at(0) == "go")
 	{responsePtr->setCommand(2);}
 
-	if (finalTokens->at(0) == "look" && finalTokens->at(1) == "at")
+	else if (finalTokens->at(0) == "look" && finalTokens->at(1) == "at")
 	{responsePtr->setCommand(3);}
 
-	if (finalTokens->at(0) == "take" || finalTokens->at(0) == "drop")
+	else if (finalTokens->at(0) == "take" || finalTokens->at(0) == "drop")
 	{responsePtr->setCommand(4);}
 
-	if (finalTokens->at(0) == "cast" && finalTokens->at(1) == "spell" && finalTokens->at(2) == "at")
+	else if (finalTokens->at(0) == "cast" && finalTokens->at(1) == "spell" && finalTokens->at(2) == "at")
 	{responsePtr->setCommand(5);}
 
 }
 
 void Parser::evalOption(std::vector<std::string>* finalTokens, Response* responsePtr)
 {
+	int tokensSize = finalTokens->size();
+	if (tokensSize <=0) //if no tokens, don't try to access them
+	{return;}
 	if (responsePtr->getCommand() == 1) //basic command
 	{
 		if (finalTokens->at(0) == "look")
 		{responsePtr->setOption(1);}
 
-		if (finalTokens->at(0) == "help")
+		else if (finalTokens->at(0) == "help")
 		{responsePtr->setOption(2);}
 
-		if (finalTokens->at(0) == "inventory")
+		else if (finalTokens->at(0) == "inventory")
 		{responsePtr->setOption(3);}
 
-		if (finalTokens->at(0) == "save")
+		else if (finalTokens->at(0) == "save")
 		{responsePtr->setOption(4);}
 	}
 
-	if (responsePtr->getCommand() == 2) //move command
+	else if (responsePtr->getCommand() == 2) //move command
 	{
+		if (tokensSize <=1) //if command is just "move"
+		{return;}
+
 		int index = 1;
-		if (finalTokens->at(1) == "to") //handles "move door" and "move to door"
-		{index = 2;}
-		if(finalTokens->size() >= index+2)
+
+		if (tokensSize >=2)
+		{
+			if (finalTokens->at(1) == "to") //handles "move door" and "move to door"
+			{index = 2;}
+		}
+
+		if(tokensSize >= index+2)
 		{
 			if(finalTokens->at(index) == "harry\'s" && finalTokens->at(index+1) == "house")
 			{responsePtr->setRoom(0);}
-			if(finalTokens->at(index) == "london" && finalTokens->at(index+1) == "diner")
+			else if(finalTokens->at(index) == "london" && finalTokens->at(index+1) == "diner")
 			{responsePtr->setRoom(2);}
-			if(finalTokens->at(index) == "safe" && finalTokens->at(index+1) == "house")
+			else if(finalTokens->at(index) == "safe" && finalTokens->at(index+1) == "house")
     		{responsePtr->setRoom(3);}
-			if(finalTokens->at(index) == "godric\'s" && finalTokens->at(index+1) == "hallow")
+			else if(finalTokens->at(index) == "godric\'s" && finalTokens->at(index+1) == "hallow")
 			{responsePtr->setRoom(6);}
-			if(finalTokens->at(index) == "malfloy" && finalTokens->at(index+1) == "manor")
+			else if(finalTokens->at(index) == "malfloy" && finalTokens->at(index+1) == "manor")
 			{responsePtr->setRoom(7);}
-			if(finalTokens->at(index) == "beach" && finalTokens->at(index+1) == "house")
+			else if(finalTokens->at(index) == "beach" && finalTokens->at(index+1) == "house")
 			{responsePtr->setRoom(8);}
-			if(finalTokens->at(index) == "gringot" && finalTokens->at(index+1) == "bank")
+			else if(finalTokens->at(index) == "gringot" && finalTokens->at(index+1) == "bank")
 			{responsePtr->setRoom(9);}
-			if(finalTokens->at(index) == "ravenclaw" && finalTokens->at(index+1) == "tower")
+			else if(finalTokens->at(index) == "ravenclaw" && finalTokens->at(index+1) == "tower")
 			{responsePtr->setRoom(12);}
-			if(finalTokens->at(index) == "great" && finalTokens->at(index+1) == "hall")
+			else if(finalTokens->at(index) == "great" && finalTokens->at(index+1) == "hall")
 			{responsePtr->setRoom(15);}
-			if(finalTokens->at(index) == "enchanted" && finalTokens->at(index+1) == "forest")
+			else if(finalTokens->at(index) == "enchanted" && finalTokens->at(index+1) == "forest")
 			{responsePtr->setRoom(16);}
 		}
 
-		if(finalTokens->size() >= index+3)
+		if(tokensSize >= index+3)
 		{
 			if(finalTokens->at(index) == "room" && finalTokens->at(index+1) == "of" && finalTokens->at(index+2) == "requirement")
 			{responsePtr->setRoom(11);}
@@ -148,113 +162,118 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 		if(finalTokens->at(index) == "motorcycle")  //changed to motorcycle instead of the burrow
 		{responsePtr->setRoom(1);}
-		if(finalTokens->at(index) == "away")        // added in addition to london diner
+		else if(finalTokens->at(index) == "away")        // added in addition to london diner
         {responsePtr->setRoom(2);}
-        if(finalTokens->at(index) == "safe")        // added in addition to safe house
+        else if(finalTokens->at(index) == "safe")        // added in addition to safe house
         {responsePtr->setRoom(3);}
-		if(finalTokens->at(index) == "headquarters")
+		else if(finalTokens->at(index) == "headquarters")
 		{responsePtr->setRoom(4);}
-		if(finalTokens->at(index) == "fireplace")   // changed to fireplace instead of forest
+		else if(finalTokens->at(index) == "fireplace")   // changed to fireplace instead of forest
 		{responsePtr->setRoom(5);}
-		if(finalTokens->at(index) == "hollow")      // added in addition to godrics hallow
+		else if(finalTokens->at(index) == "hollow")      // added in addition to godrics hallow
         {responsePtr->setRoom(6);}
-		if(finalTokens->at(index) == "hogsmeade")
+		else if(finalTokens->at(index) == "hogsmeade")
 		{responsePtr->setRoom(10);}
-		if(finalTokens->at(index) == "courtyard")
+		else if(finalTokens->at(index) == "courtyard")
 		{responsePtr->setRoom(13);}
-		if(finalTokens->at(index) == "boathouse")
+		else if(finalTokens->at(index) == "boathouse")
 		{responsePtr->setRoom(14);}
 		}
 
-	if (responsePtr->getCommand() == 3) //interaction
+	else if (responsePtr->getCommand() == 3) //interaction
 	{
+		if (tokensSize >=2)
+		{return;}
 		if (finalTokens->at(2) == "potion")
 		{responsePtr->setInteraction(0);}
-		if (finalTokens->at(2) == "clothes")
+		else if (finalTokens->at(2) == "clothes")
 		{responsePtr->setInteraction(1);}
-		if (finalTokens->at(2) == "will")
+		else if (finalTokens->at(2) == "will")
 		{responsePtr->setInteraction(2);}
-		if (finalTokens->at(2) == "wedding")
+		else if (finalTokens->at(2) == "wedding")
 		{responsePtr->setInteraction(3);}
-		if (finalTokens->at(2) == "server")
+		else if (finalTokens->at(2) == "server")
 		{responsePtr->setInteraction(4);}
-		if(finalTokens->size() >= 4)
+		else if(tokensSize >= 4)
 		{
 			if (finalTokens->at(2) == "death" && finalTokens->at(3) == "eater")
 			{responsePtr->setInteraction(5);}
 		}
-		if (finalTokens->at(2) == "deatheater")
+		else if (finalTokens->at(2) == "deatheater")
         {responsePtr->setInteraction(5);}
-		if (finalTokens->at(2) == "cupboard")
+		else if (finalTokens->at(2) == "cupboard")
 		{responsePtr->setInteraction(6);}
-		if ((finalTokens->at(2) == "mundungus") || (finalTokens->at(2) == "Mundungus"))     // added Mundungus
+		else if ((finalTokens->at(2) == "mundungus") || (finalTokens->at(2) == "Mundungus"))     // added Mundungus
 		{responsePtr->setInteraction(7);}
-		if (finalTokens->at(2) == "toilet")
+		else if (finalTokens->at(2) == "toilet")
 		{responsePtr->setInteraction(8);}
-		if (finalTokens->at(2) == "elevator")
+		else if (finalTokens->at(2) == "elevator")
 		{responsePtr->setInteraction(9);}
 		//if (finalTokens->at(2) == "dolores")      // changed to spell interaction
 		//{responsePtr->setInteraction(10);}
-		if (finalTokens->at(2) == "tent")
+		else if (finalTokens->at(2) == "tent")
 		{responsePtr->setInteraction(11);}
-		if (finalTokens->at(2) == "patronus")
+		else if (finalTokens->at(2) == "patronus")
 		{responsePtr->setInteraction(12);}
-		if (finalTokens->at(2) == "lake")
+		else if (finalTokens->at(2) == "lake")
 		{responsePtr->setInteraction(13);}
-		if (finalTokens->at(2) == "horcrux")
+		else if (finalTokens->at(2) == "horcrux")
 		{responsePtr->setInteraction(14);}
-		if (finalTokens->at(2) == "graveyard")
+		else if (finalTokens->at(2) == "graveyard")
 		{responsePtr->setInteraction(15);}
-		if (finalTokens->at(2) == "house")
+		else if (finalTokens->at(2) == "house")
 		{responsePtr->setInteraction(16);}
-		if (finalTokens->at(2) == "bathilda")
+		else if (finalTokens->at(2) == "bathilda")
 		{responsePtr->setInteraction(17);}
-		if (finalTokens->at(2) == "nagini")
+		else if (finalTokens->at(2) == "nagini")
 		{responsePtr->setInteraction(18);}
 
 	}
 
-	if (responsePtr->getCommand() == 4) //item
+	else if (responsePtr->getCommand() == 4) //item
 	{
+		if (tokensSize >=1)
+		{return;}
 		//set option for take or drop
 		if (finalTokens->at(0) == "take")
 		{responsePtr->setOption(1);}
-		if (finalTokens->at(0) == "drop")
+		else if (finalTokens->at(0) == "drop")
 		{responsePtr->setOption(2);}
 
 		//set item number
 		if(finalTokens->at(1) == "snitch")
 		{responsePtr->setItem(0);}
-		if(finalTokens->at(1) == "necklace")
+		else if(finalTokens->at(1) == "necklace")
 		{responsePtr->setItem(1);}
-		if(finalTokens->at(1) == "sword")
+		else if(finalTokens->at(1) == "sword")
 		{responsePtr->setItem(2);}
-		if(finalTokens->at(1) == "wand")
+		else if(finalTokens->at(1) == "wand")
 		{responsePtr->setItem(3);}
-		if(finalTokens->at(1) == "chalice")
+		else if(finalTokens->at(1) == "chalice")
 		{responsePtr->setItem(4);}
-		if(finalTokens->at(1) == "diadem")
+		else if(finalTokens->at(1) == "diadem")
 		{responsePtr->setItem(5);}
-		if(finalTokens->at(1) == "memories")
+		else if(finalTokens->at(1) == "memories")
 		{responsePtr->setItem(6);}
-		if(finalTokens->at(1) == "stone")
+		else if(finalTokens->at(1) == "stone")
 		{responsePtr->setItem(7);}
 	}
 
-	if (responsePtr->getCommand() == 5) //spell
+	else if (responsePtr->getCommand() == 5) //spell
 	{
+		if (tokensSize >=3)
+		{return;}
+	
 		if(finalTokens->at(3) == "death" && finalTokens->at(4) == "eater")
 		{responsePtr->setInteraction(5);}
 
-		if(finalTokens->at(3) == "deatheater")
+		else if(finalTokens->at(3) == "deatheater")
         {responsePtr->setInteraction(5);}     // added single word form of death eater.
 
-        if((finalTokens->at(3) == "dolores") || (finalTokens->at(3) == "Dolores"))     // changed dolores to a spell instead of a look at interaction
+        else if((finalTokens->at(3) == "dolores") || (finalTokens->at(3) == "Dolores"))     // changed dolores to a spell instead of a look at interaction
         {responsePtr->setInteraction(10);}
 
-		if(finalTokens->at(3) == "tent")
+		else if(finalTokens->at(3) == "tent")
 		{responsePtr->setInteraction(11);}
-
-
 	}
 }
