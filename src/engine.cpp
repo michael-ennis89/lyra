@@ -44,8 +44,8 @@ bool Game::Initialize(int option) {
     try{
 
         //Initialize all interactions and items
-        itemsArray=Data::getItems(3);
-        interactionsArray=Data::getInteractions(15);
+        itemsArray=Data::getItems(5);
+        interactionsArray=Data::getInteractions(27);
 
 
         if (option==1) {
@@ -457,13 +457,13 @@ void Game::Run(){
                     }
                 case 1:
                     {
-                        if(parsedResponse->getInteraction() == 2)
+                        if(parsedResponse->getInteraction() == 2 && (interactions[2][1] == 1))
                         {
                             interactionsArray[2]->printLong();               // Print long <will>
                             interactions[2][1] = false;                     // Set <will> availability to false.
                             items[0][1] = true;                             // Set <snitch> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 3)
+                        else if(parsedResponse->getInteraction() == 3 && (interactions[3][1] == 1))
                         {
                             interactionsArray[3]->printLong();               // Print long <wedding>
                             interactions[2][1] = false;                     // Set <wedding> availability to false.
@@ -473,13 +473,13 @@ void Game::Run(){
                     }
                 case 2:
                     {
-                        if(parsedResponse->getInteraction() == 4)
+                        if(parsedResponse->getInteraction() == 4 && (interactions[4][1] == 1))
                         {
                             interactionsArray[4]->printLong();               // Print long <server>
                             interactions[4][1] = false;                     // Set <server> availability to false.
                             interactions[5][1] = true;                      // Set <deatheater> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 5)
+                        else if(parsedResponse->getInteraction() == 5 && (interactions[5][1] == 1))
                         {
                             std::cout << "You need to cast a spell at the Death Eaters" << std::endl;
                         }
@@ -487,13 +487,13 @@ void Game::Run(){
                     }
                 case 3:
                     {
-                        if(parsedResponse->getInteraction() == 6)
+                        if(parsedResponse->getInteraction() == 6 && (interactions[6][1] == 1))
                         {
                             interactionsArray[6]->printLong();               // Print long <cupboard>
                             interactions[6][1] = false;                     // Set <cupboard> availability to false.
                             interactions[7][1] = true;                      // Set <Mundungus> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 7)
+                        else if(parsedResponse->getInteraction() == 7 && (interactions[7][1] == 1))
                         {
                             interactionsArray[7]->printLong();               // Print long <Mundungus>
                             interactions[7][1] = false;                     // Set <Mundungus> availability to false.
@@ -503,13 +503,13 @@ void Game::Run(){
                     }
                 case 4:
                     {
-                        if(parsedResponse->getInteraction() == 8)
+                        if(parsedResponse->getInteraction() == 8 && (interactions[8][1] == 1))
                         {
                             interactionsArray[8]->printLong();               // Print long <toilet>
                             interactions[8][1] = false;                     // Set <toilet> availability to false.
                             interactions[9][1] = true;                      // Set <elevator> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 9)
+                        else if(parsedResponse->getInteraction() == 9 && (interactions[9][1] == 1))
                         {
                             interactionsArray[9]->printLong();               // Print long <elevator>
                             interactions[9][1] = false;                     // Set <elevator> availability to false.
@@ -519,35 +519,36 @@ void Game::Run(){
                     }
                 case 5:
                     {
-                        if(parsedResponse->getInteraction() == 11)
+                        if(parsedResponse->getInteraction() == 11 && (interactions[11][1] == true))
                         {
                             std::cout << "You need to cast a spell to set the tent up." << std::endl;
                         }
-                        else if(parsedResponse->getInteraction() == 12)
+                        else if(parsedResponse->getInteraction() == 12 && (interactions[12][1] == 1))
                         {
                             interactionsArray[12]->printLong();              // Print long <patronus>
                             interactions[12][1] = false;                    // Set <patronus> availability to false.
                             interactions[13][1] = true;                     // Set <lake> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 13)
+                        else if(parsedResponse->getInteraction() == 13 && (interactions[13][1] == 1))
                         {
                             interactionsArray[13]->printLong();              // Print long <lake>
                             interactions[13][1] = false;                    // Set <lake> availability to false.
                             items[2][1] = true;                             // Set <sword> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 14)
+                        else if(parsedResponse->getInteraction() == 14 && (interactions[14][1] == 1))
                         {
-                            if(items[2][0] == -1)
+                            if((items[2][0] == -1) && (items[3][0] == -1))
                             {
                                 interactionsArray[14]->printLong();              // Print long <horcrux>
                                 interactions[14][1] = false;                    // Set <horcrux> availability to false.
                                 roomsVisited[6][1] = true;                      // Set Godrics Hallow to Available
-                                std::cout << "You have reached the end of current development. Exiting" << std::endl;
-                                exit(0);
                             }
                             else
                             {
-                                std::cout << "You need the <Sword> of Gryffindor to defeat Voldermort's Horcrux." << std::endl;
+                                if(items[2][0] != -1)
+                                    std::cout << "You need the <Sword> of Gryffindor to defeat Voldermort's Horcrux." << std::endl;
+                                if(items[3][0] != -1)
+                                    std::cout << "You need the necklace Horcrux." << std::endl;
                             }
 
                         }
@@ -555,22 +556,88 @@ void Game::Run(){
                     }
                 case 6:
                     {
+                        if(parsedResponse->getInteraction() == 15 && (interactions[15][1] == 1))
+                        {
+                            interactionsArray[15]->printLong();         // print long cemetery
+                        }
+                        else if(parsedResponse->getInteraction() == 16 && (interactions[16][1] == 1))
+                        {
+                            interactionsArray[16]->printLong();         // print long house
+                        }
+                        else if(parsedResponse->getInteraction() == 17 && (interactions[17][1] == 1))
+                        {
+                            interactionsArray[17]->printLong();         // print long bathilda
+                            interactions[17][1] = false;                // set bathilda false
+                            interactions[15][1] = false;                // set temp false while in house
+                            interactions[16][1] = false;                // set temp false while in house
+                            interactions[18][1] = true;                 // set nagini available
+                        }
+                        else if(parsedResponse->getInteraction() == 18 && (interactions[18][1] == 1))
+                        {
+                            interactionsArray[18]->printLong();         // print long nagini
+                            interactions[18][1] = false;                // set nagini unavailable.
+                            interactions[15][1] = true;                 // open up temp closed cemetery
+                            interactions[16][1] = true;                 // open up temp closed childhood house
+                            roomsVisited[7][1] = true;                  // Set malfloy manor to open.
+
+                        }
                         break;
                     }
                 case 7:
                     {
+                        if(parsedResponse->getInteraction() == 19 && (interactions[19][1] == 1))
+                        {
+                            interactionsArray[19]->printLong();         // print long Dobby
+                            interactions[19][1] = false;                // set Dobby unavailable
+                            interactions[20][1] = true;                 // set Draco to available.
+                        }
                         break;
                     }
                 case 8:
                     {
+                        if(parsedResponse->getInteraction() == 21 && (interactions[21][1] == 1))
+                        {
+                            interactionsArray[21]->printLong();         // print long grave
+                            interactions[21][1] = false;                // set grave unavailable
+                            interactions[22][2] = true;                  // set griphook available.
+                        }
+                        else if(parsedResponse->getInteraction() == 22 && (interactions[22][1] == 1))
+                        {
+                            interactionsArray[22]->printLong();         // print long griphook
+                            interactions[22][1] = false;                // set grip hook unavailable.
+                            roomsVisited[9][1] = true;                  // set gringots to available.
+                        }
                         break;
                     }
                 case 9:
                     {
+                        if(parsedResponse->getInteraction() == 23 && (interactions[23][1] == 1))
+                        {
+                            std::cout << "You need to cast a spell at the <Banker>" << std::endl;
+                        }
+                        else if(parsedResponse->getInteraction() == 24 && (interactions[24][1] == 1))
+                        {
+                            interactionsArray[24]->printLong();         // print long vault.
+                            interactions[24][1] = false;                // set vault unavailable.
+                            items[4][1] = true;                         // set Chalice Available.
+
+                        }
                         break;
                     }
                 case 10:
                     {
+                        if(parsedResponse->getInteraction() == 25 && (interactions[25][1] == 1))
+                        {
+                            interactionsArray[25]->printLong();         // print long aberforth
+                            interactions[25][1] = false;                // set aberforth unavailable
+                            interactions[26][1] = true;                   // set picture available.
+                        }
+                        else if(parsedResponse->getInteraction() == 26 && (interactions[26][1] == 1))
+                        {
+                            interactionsArray[26]->printLong();         // print long painting.
+                            interactions[26][1] = false;                // set painting unavailable.
+                            roomsVisited[11][1] = true;                 // set Room of Requirement available..
+                        }
                         break;
                     }
                 }
@@ -648,6 +715,46 @@ void Game::Run(){
                             }
                             break;
                         }
+                    case 3:
+                        {
+                            // if Dracos wand is in default room, is available, and user is in room 7
+                            if((items[3][0] == 7) && (items[3][1] == true) && (currentRoom == 7))
+                            {
+                                itemsArray[3]->printLong();                 // print long
+                                items[3][0] = -1;                           // put wand in inventory
+                                roomsVisited[8][1] = true;                  // Set beach house to available.
+                            }
+                            else if((items[3][0] == currentRoom) && (items[3][1] == true))
+                            {
+                                items[3][0] = -1;
+                                std::cout << "You picked up Draco's <Wand>." << std::endl;
+                            }
+                            else if(items[3][0] == -1)
+                            {
+                                std::cout << "Draco's <Wand> is already in your inventory." << std::endl;
+                            }
+                            break;
+
+                        }
+                    case 5:
+                        {
+                            if((items[4][0] == 9) && (items[4][1] == true) && (currentRoom == 9))
+                            {
+                                itemsArray[4]->printLong();                 // print long chalice
+                                items[4][0] = -1;                           // put chalice in inventory.
+                                roomsVisited[10][1] = true;                 // set hogsmeade to available.
+                            }
+                            else if((items[4][0] == currentRoom) && (items[4][1] == true))
+                            {
+                                items[4][0] = -1;                           // put item in inventory
+                                std::cout << "You picked up the <Chalice> Horcrux." << std::endl;
+                            }
+                            else if(items[4][0] == -1)
+                            {
+                                std::cout << " The <Chalice> Horcrux is already in your inventory." << std::endl;
+                            }
+                            break;
+                        }
                     }
 
                     movedRooms = false;
@@ -665,9 +772,9 @@ void Game::Run(){
                         else if(parsedResponse->getItem() == 2)
                             std::cout << "You dropped the <Sword> of Gryffindor." << std::endl;
                         else if(parsedResponse->getItem() == 3)
-                            std::cout << "You dropped Draco Malfloy's <wand>." << std::endl;
+                            std::cout << "You dropped Draco Malfloy's <Wand>." << std::endl;
                         else if(parsedResponse->getItem() == 4)
-                            std::cout << "You dropped the <chalice> Horcrux." << std::endl;
+                            std::cout << "You dropped the <Chalice> Horcrux." << std::endl;
                         else if(parsedResponse->getItem() == 5)
                             std::cout << "You dropped the <Diadem> of Ravenclaw" << std::endl;
                         else if(parsedResponse->getItem() == 6)
@@ -709,6 +816,20 @@ void Game::Run(){
                     interactions[11][1] = false;                    // Set <tent> availability to false.
                     interactions[12][1] = true;                     // Set <patronus> availability to true.
                     movedRooms = false;
+                    break;
+                }
+            case 20:
+                {
+                    interactionsArray[20]->printLong();             // print long Draco disarm
+                    interactions[20][1] = false;                    // set draco disarm available to false
+                    items[3][1] = true;                             // set wand to available.
+                    break;
+                }
+            case 23:
+                {
+                    interactionsArray[23]->printLong();         // print long banker.
+                    interactions[23][1] = false;                // set banker unavailable.
+                    interactions[24][1] = true;                 // set vault available.
                     break;
                 }
             }
@@ -756,7 +877,36 @@ bool getIntInput(int& var) {
 // False otherwise.
 bool Game::moveLogicCheck(int nextRoom) const
 {
-    if((nextRoom == (currentRoom+1)) && (roomsVisited[currentRoom+1][1] == true))
+    bool checker = true;
+    if((nextRoom == 11) && (currentRoom == 10) && (roomsVisited[11][1] == true))
+    {
+        if(items[0][1] != -1)
+        {
+            std::cout << "You must possess the Golden <Snitch> in your inventory before traveling to Hogwarts." << std::endl;
+            checker = false;
+        }
+        if(items[3][1] != -1)
+        {
+            std::cout << "You must possess Draco's <Wand> in your inventory before traveling to Hogwarts." << std::endl;
+            checker = false;
+        }
+        if(items[4][1] != -1)
+        {
+            std::cout << "You must posses the Chalice Horcrux in your inventory before traveling to Hogwarts." << std::endl;
+            checker = false;
+        }
+
+        if(checker == false)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
+    }
+    else if((nextRoom == (currentRoom+1)) && (roomsVisited[currentRoom+1][1] == true))
     {
         return true;
     }
@@ -837,7 +987,7 @@ void Game::printItems(int disreguard)
 {
     int i;
     //for(i = 0; i < 8; i++)
-    for(i = 0; i < 3; i++)     // set to 3 because only 3 items right now.
+    for(i = 0; i < 5; i++)     // set to 3 because only 3 items right now.
     {
         if(i != disreguard)
         {
@@ -857,7 +1007,7 @@ void Game::printInteractions()
 {
     int i;
     //for(i = 0; i < 39; i++)
-    for(i = 0; i < 15; i++)     // set to 15 because there are only 15 interactions complete right now.
+    for(i = 0; i < 27; i++)     // set to 15 because there are only 15 interactions complete right now.
     {
         if((interactions[i][0] == currentRoom) && (interactions[i][1] == 1))
         {
