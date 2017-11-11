@@ -13,6 +13,11 @@
 #include "Response.hpp"
 #include "parser.hpp"
 
+struct Player {
+    std::string name;
+    int saves=0;
+};
+
 class Game{
 public:
     Game();
@@ -21,6 +26,8 @@ public:
     void Run();
 
 private:
+    Player player;
+
     std::string playerName;
 
     std::vector<Data::Item*> itemsArray;                //Holds items long/short descriptions loaded from files
@@ -43,12 +50,14 @@ private:
 
     //Initialization
     bool Initialize(int option);//Initialize all variables and return true if it's initialized correctly (option 1=New Game, 2=load Game)
-    void loadDefault();         //Load all game state variables from a default file which is just like a save file, but holds default values and never changes
-    void loadFromFile(const std::string& fileName);        //Load all game state variables from a save file
+    bool loadDefault();         //Load all game state variables from a default file which is just like a save file, but holds default values and never changes
+    bool loadFromFile(const std::string& fileName, const bool& isDefault=false);        //Load all game state variables from a save file
 
     //Save
-    bool saveGame() const;      //Save game state to a file
+    bool saveGame(const std::string& saveName);      //Save game state to a file
 
+	//Display ART
+	void displayArt();
 };
 
 

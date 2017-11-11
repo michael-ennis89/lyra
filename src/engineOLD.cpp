@@ -19,8 +19,8 @@ Game::~Game() {
     std::cout << "Game closed!\n";
 }
 
-std::vector<Player> getProfiles(bool displayProfiles=false) {
-    std::vector<Player> res;
+std::vector<std::string> getProfiles(bool displayProfiles=false) {
+    std::vector<std::string> res;
 
     std::ifstream fileStream("data/profiles.data");
 
@@ -29,39 +29,24 @@ std::vector<Player> getProfiles(bool displayProfiles=false) {
         return {};
     }
     int cnt = 0;
-        Player playerDisplay;
-    while(fileStream>>playerDisplay.name){
+    std::string inputName="";
+    while(fileStream>>inputName){
         if(displayProfiles)
-        std::cout << (++cnt) << ". " << playerDisplay.name << std::endl;
-
-        res.push_back(playerDisplay);
+        std::cout << (++cnt) << ". " << inputName << std::endl;
+        res.push_back(inputName);
     }
 
     return res;
 }
 
-void createProfile(const Player& playerName) {
-
-    std::ofstream profileFile("profiles/" + playerName.name + ".profile", std::ios_base::out | std::ios_base::trunc);
-    profileFile << playerName.name << " " << playerName.saves;
-    profileFile.close();
-
-    std::ofstream AllProfilesFile("data/profiles.data", std::ios_base::out | std::ios_base::app);
-    AllProfilesFile << playerName.name << "\r\n";
-
-    AllProfilesFile.close();
-}
 
 bool Game::Initialize(int option) {
     try{
 
         //Initialize all interactions and items
         itemsArray=Data::getItems(3);
-        interactionsArray=Data::getInteractions(15);
+        interactionsArray=Data::getInteractions(3);
 
-        //Get profiles from file.
-        std::vector<Player> profiles;
-        profiles = getProfiles(false);
 
         if (option==1) {
             //NEW GAME
@@ -69,53 +54,39 @@ bool Game::Initialize(int option) {
             bool brk = true;
             while(true) {
                 std::cout << "Please enter new profile name(no whitespaces): ";
-                std::cin>>player.name;
+                std::cin>>playerName;
                 std::cin.get();
                 std::cin.sync();
                 //std::cin.ignore(std::string, '\n');
                 brk=true;
-                for(const char& c:player.name) {
+                for(const char& c:playerName) {
                     if(std::isalpha(c)==false && std::isdigit(c)==false){
                         brk=false;
                         break;
                     }
                 }
 
-                if(brk) {
-                    //Check if it is a duplicate
-                    for(const Player& p: profiles) {
-                        if (p.name==player.name) {
-                            std::cout << "Profile " << p.name << " already exists!" << std::endl;
-                            brk=false;
-                            break;
-                        }
-                    }
-                    if(brk)
-                    break;
-                }
+                if(brk)
+                break;
             }
 
-            createProfile(player); //Create a file in profiles for a new player
+            std::cout << "Hello " << playerName << ". Welcome to the Horcrux!" << std::endl;
 
-            std::cout << "Hello " << player.name << ". Welcome to the Horcrux!" << std::endl;
-            std::cout << "For a list of commands type 'help'" << std::endl;
-
-
-
-            return loadDefault();
-        } else if (option==2) {
-            LOAD_GAME:
-            std::cout << "\nLIST OF AVAILABLE PROFILES: " << std::endl;
-            profiles = getProfiles(true);
+            loadDefault();
+        }else if (option==2) {
             //LOAD GAME
             //Load from a save file
 
             //Display all available save files
+            //Select a profile first
+            std::cout << "LIST OF AVAILABLE PROFILES: " << std::endl;
+
+            std::vector<std::string> profiles;
             std::string inputName = "";
 
-            std::cout << profiles.size()+1 << ". <--- Go Back" << std::endl;
+            profiles = getProfiles(true);
             if (profiles.empty()) {
-                std::cout << "File profiles.data is either missing or there are no profiles yet!" << std::endl;
+                std::cout << "File profiles.data is either missing or there is no profiles yet!" << std::endl;
                 return Initialize(startGame());
             }
 
@@ -123,13 +94,9 @@ bool Game::Initialize(int option) {
             while(true) {
                 std::cout << "Enter a profile number: ";
                 if(getIntInput(choice)==true) {
-
-                    if (choice==profiles.size()+1) {
-                        return Initialize(startGame());
-                    }
                     if(choice>0 && choice<=profiles.size()) {
-                        player=profiles[choice-1];
-                        std::cout << "Selected profile: " << player.name;
+                        playerName=profiles[choice-1];
+                        std::cout << "Selected profile: " << playerName;
                         break;
                     } else {
                         std::cout << "Input was out of bounds, please enter a number between 1 and " << profiles.size() << std::endl;
@@ -140,77 +107,9 @@ bool Game::Initialize(int option) {
             }
 
 
-            //Read from a .profile file
-            std::ifstream profileFileStream("profiles/" + player.name + ".profile", std::ios_base::in);
-
-            if(!profileFileStream.is_open()) {
-                std::ofstream profileOFS("profiles/" + player.name + ".profile", std::ios_base::out);
-                profileOFS<<player.name << " 0";
-                player.saves = 0;
-                profileOFS.close();
-            }else{
-                profileFileStream>>player.name>>player.saves;
-                profileFileStream.close();
-            }
-
-
             //GET SAVE FILENAME BY playerName.
-            std::string saveFileName = "";
-
-            //Check for existing save files for selected profile
-
-            std::ifstream iStreamFiles;
-            int foundFiles = 0;
-            std::vector<std::string> saveFiles;
-
-            std::cout<<std::endl<<std::endl;
-            std::cout << "Available saved games for " << player.name << ": " <<std::endl;
-
-            for(int i=0; foundFiles<player.saves && i<20; i++){
-                saveFileName = "saved/" + player.name + "_" + Data::to_string(i) + ".save";
-                iStreamFiles.open(saveFileName);
-
-                if(iStreamFiles.is_open()) {
-                    std::string title = "";
-                    std::getline(iStreamFiles, title);
-                    std::cout << ++foundFiles << ". " << title << std::endl;
-                    saveFiles.push_back(saveFileName);
-                    iStreamFiles.close();
-                }
-            }
-
-            std::cout << foundFiles+1 << ". <--- Go Back" << std::endl;
-
-
-            std::cout << "\nSelect the file to load a game from: ";
-
-            if (foundFiles>0) {
-
-                while(true) {
-
-                    int input = 0;
-                    if(getIntInput(input)==true) {
-                        if (input == foundFiles+1) {
-                            goto LOAD_GAME;
-                        }
-                        if (input>0 && input<foundFiles+1) {
-                            saveFileName=saveFiles[input-1];
-                            std::cout << "Selected: " << saveFiles[input-1] << std::endl;
-                            break;
-                        }
-
-                    }
-
-                }
-
-            } else {
-
-                std::cout << "No save files for this profile!" << std::endl;
-            }
-
-
             //TODO
-            return loadFromFile(saveFileName);
+            loadFromFile("data/" + playerName + "_save.data");
         }
 
     } catch (std::exception& ex) {
@@ -222,7 +121,6 @@ bool Game::Initialize(int option) {
 }
 
 void Game::Run(){
-    displayArt();
 
     if (Initialize(startGame()) == false) {
         std::cout << "Unable to start a game!\n";
@@ -236,7 +134,6 @@ void Game::Run(){
     std::string userCommand;    // Holds user commands
     Response *parsedResponse;   // Holds parsed response from parser
     Data::Room *userRoom;
-    Parser myParser;
 
     /*
     Each Case in the function follows this general flow:
@@ -430,7 +327,6 @@ void Game::Run(){
         getline( std::cin, userCommand);
 
         // Pre parse command for exit
-        /*
         if (userCommand=="exit") {
             std::cout << "Do you want to save first? Y/N " << std::endl;
             std::cin >> userCommand;
@@ -448,11 +344,9 @@ void Game::Run(){
                 std::cout << "Invalid Command" << std::endl;
             }
         }
-        */
 
         //parsedResponse = parseCommand(userCommand);
-        Response testResponse = myParser.parse(userCommand);
-        parsedResponse = &testResponse;
+        parsedResponse = new Response();
 
         if(parsedResponse->getCommand() == -1)
         {
@@ -525,7 +419,6 @@ void Game::Run(){
                 }
 
                 userRoom->printExitLong();
-                std::cout << std::endl;
                 delete userRoom;                                            // Delete current room so can reallocate
                 movedRooms = true;                                          // Room moved is true.
             }
@@ -542,29 +435,29 @@ void Game::Run(){
                 {
                 case 0:        // Harry's House
                     {
-                        if((parsedResponse->getInteraction() == 0) && (interactions[0][1] == 1)) // If interaction 1 <potion>
+                        if(parsedResponse->getInteraction() == 0)           // If interaction 1 <potion>
                         {
                             interactionsArray[0]->printLong();               // Print long <potion>
-                            interactions[0][1] = 0;                         // Set <potion> availability to false.
-                            interactions[1][1] = 1;                         // Set <clothes> availability to true.
+                            interactions[0][1] = false;                     // Set <potion> availability to false.
+                            interactions[1][1] = true;                      // Set <clothes> availability to true.
                         }
-                        else if((parsedResponse->getInteraction() == 1) && (interactions[1][1] == 1))
+                        else if(parsedResponse->getInteraction() == 1)
                         {
                             interactionsArray[1]->printLong();               // Print Long <clothes>
-                            interactions[1][1] = 0;                         // Set <clothes> availability to false.
-                            roomsVisited[1][1] = 1;                         // Set Wesley House Available.
+                            interactions[1][1] = false;                     // Set <clothes> availability to false.
+                            roomsVisited[1][1] = true;                      // Set Wesley House Available.
                         }
                         break;
                     }
                 case 1:
                     {
-                        if(parsedResponse->getInteraction() == 2 && (interactions[2][1] == 1))
+                        if(parsedResponse->getInteraction() == 2)
                         {
                             interactionsArray[2]->printLong();               // Print long <will>
                             interactions[2][1] = false;                     // Set <will> availability to false.
                             items[0][1] = true;                             // Set <snitch> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 3 && (interactions[3][1] == 1))
+                        else if(parsedResponse->getInteraction() == 3)
                         {
                             interactionsArray[3]->printLong();               // Print long <wedding>
                             interactions[2][1] = false;                     // Set <wedding> availability to false.
@@ -574,13 +467,13 @@ void Game::Run(){
                     }
                 case 2:
                     {
-                        if(parsedResponse->getInteraction() == 4 && (interactions[4][1] == 1))
+                        if(parsedResponse->getInteraction() == 4)
                         {
                             interactionsArray[4]->printLong();               // Print long <server>
                             interactions[4][1] = false;                     // Set <server> availability to false.
                             interactions[5][1] = true;                      // Set <deatheater> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 5 && (interactions[5][1] == 1))
+                        else if(parsedResponse->getInteraction() == 5)
                         {
                             std::cout << "You need to cast a spell at the Death Eaters" << std::endl;
                         }
@@ -588,13 +481,13 @@ void Game::Run(){
                     }
                 case 3:
                     {
-                        if(parsedResponse->getInteraction() == 6 && (interactions[6][1] == 1))
+                        if(parsedResponse->getInteraction() == 6)
                         {
                             interactionsArray[6]->printLong();               // Print long <cupboard>
                             interactions[6][1] = false;                     // Set <cupboard> availability to false.
                             interactions[7][1] = true;                      // Set <Mundungus> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 7 && (interactions[7][1] == 1))
+                        else if(parsedResponse->getInteraction() == 7)
                         {
                             interactionsArray[7]->printLong();               // Print long <Mundungus>
                             interactions[7][1] = false;                     // Set <Mundungus> availability to false.
@@ -604,41 +497,47 @@ void Game::Run(){
                     }
                 case 4:
                     {
-                        if(parsedResponse->getInteraction() == 8 && (interactions[8][1] == 1))
+                        if(parsedResponse->getInteraction() == 8)
                         {
                             interactionsArray[8]->printLong();               // Print long <toilet>
                             interactions[8][1] = false;                     // Set <toilet> availability to false.
                             interactions[9][1] = true;                      // Set <elevator> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 9 && (interactions[9][1] == 1))
+                        else if(parsedResponse->getInteraction() == 9)
                         {
                             interactionsArray[9]->printLong();               // Print long <elevator>
                             interactions[9][1] = false;                     // Set <elevator> availability to false.
                             interactions[10][1] = true;                     // Set <dolores> availability to true.
                         }
+                        else if(parsedResponse->getInteraction() == 10)
+                        {
+                            interactionsArray[10]->printLong();              // Print long <dolores>
+                            interactions[10][1] = false;                    // Set <dolores> availability to false.
+                            items[1][1] = true;                             // Set Necklace available.
+                        }
                         break;
                     }
                 case 5:
                     {
-                        if(parsedResponse->getInteraction() == 11 && (interactions[11][1] == true))
+                        if(parsedResponse->getInteraction() == 11)
                         {
                             std::cout << "You need to cast a spell to set the tent up." << std::endl;
                         }
-                        else if(parsedResponse->getInteraction() == 12 && (interactions[12][1] == 1))
+                        else if(parsedResponse->getInteraction() == 12)
                         {
                             interactionsArray[12]->printLong();              // Print long <patronus>
                             interactions[12][1] = false;                    // Set <patronus> availability to false.
                             interactions[13][1] = true;                     // Set <lake> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 13 && (interactions[13][1] == 1))
+                        else if(parsedResponse->getInteraction() == 13)
                         {
-                            interactionsArray[13]->printLong();              // Print long <lake>
+                            interactionsArray[12]->printLong();              // Print long <lake>
                             interactions[13][1] = false;                    // Set <lake> availability to false.
                             items[2][1] = true;                             // Set <sword> availability to true.
                         }
-                        else if(parsedResponse->getInteraction() == 14 && (interactions[14][1] == 1))
+                        else if(parsedResponse->getInteraction() == 14)
                         {
-                            if((items[2][0] == -1) && (items[3][0] == -1))
+                            if(items[2][0] == -1)
                             {
                                 interactionsArray[14]->printLong();              // Print long <horcrux>
                                 interactions[14][1] = false;                    // Set <horcrux> availability to false.
@@ -646,10 +545,7 @@ void Game::Run(){
                             }
                             else
                             {
-                                if(items[2][0] != -1)
-                                    std::cout << "You need the <Sword> of Gryffindor to defeat Voldermort's Horcrux." << std::endl;
-                                if(items[3][0] != -1)
-                                    std::cout << "You need the necklace Horcrux." << std::endl;
+                                std::cout << "You need the <Sword> of Gryffindor to defeat Voldermort's Horcrux." << std::endl;
                             }
 
                         }
@@ -657,88 +553,22 @@ void Game::Run(){
                     }
                 case 6:
                     {
-                        if(parsedResponse->getInteraction() == 15 && (interactions[15][1] == 1))
-                        {
-                            interactionsArray[15]->printLong();         // print long cemetery
-                        }
-                        else if(parsedResponse->getInteraction() == 16 && (interactions[16][1] == 1))
-                        {
-                            interactionsArray[16]->printLong();         // print long house
-                        }
-                        else if(parsedResponse->getInteraction() == 17 && (interactions[17][1] == 1))
-                        {
-                            interactionsArray[17]->printLong();         // print long bathilda
-                            interactions[17][1] = false;                // set bathilda false
-                            interactions[15][1] = false;                // set temp false while in house
-                            interactions[16][1] = false;                // set temp false while in house
-                            interactions[18][1] = true;                 // set nagini available
-                        }
-                        else if(parsedResponse->getInteraction() == 18 && (interactions[18][1] == 1))
-                        {
-                            interactionsArray[18]->printLong();         // print long nagini
-                            interactions[18][1] = false;                // set nagini unavailable.
-                            interactions[15][1] = true;                 // open up temp closed cemetery
-                            interactions[16][1] = true;                 // open up temp closed childhood house
-                            roomsVisited[7][1] = true;                  // Set malfloy manor to open.
-
-                        }
                         break;
                     }
                 case 7:
                     {
-                        if(parsedResponse->getInteraction() == 19 && (interactions[19][1] == 1))
-                        {
-                            interactionsArray[19]->printLong();         // print long Dobby
-                            interactions[19][1] = false;                // set Dobby unavailable
-                            interactions[20][1] = true;                 // set Draco to available.
-                        }
                         break;
                     }
                 case 8:
                     {
-                        if(parsedResponse->getInteraction() == 21 && (interactions[21][1] == 1))
-                        {
-                            interactionsArray[21]->printLong();         // print long grave
-                            interactions[21][1] = false;                // set grave unavailable
-                            interactions[22][2] = true;                  // set griphook available.
-                        }
-                        else if(parsedResponse->getInteraction() == 22 && (interactions[22][1] == 1))
-                        {
-                            interactionsArray[22]->printLong();         // print long griphook
-                            interactions[22][1] = false;                // set grip hook unavailable.
-                            roomsVisited[9][1] = true;                  // set gringots to available.
-                        }
                         break;
                     }
                 case 9:
                     {
-                        if(parsedResponse->getInteraction() == 23 && (interactions[23][1] == 1))
-                        {
-                            std::cout << "You need to cast a spell at the <Banker>" << std::endl;
-                        }
-                        else if(parsedResponse->getInteraction() == 24 && (interactions[24][1] == 1))
-                        {
-                            interactionsArray[24]->printLong();         // print long vault.
-                            interactions[24][1] = false;                // set vault unavailable.
-                            items[4][1] = true;                         // set Chalice Available.
-
-                        }
                         break;
                     }
                 case 10:
                     {
-                        if(parsedResponse->getInteraction() == 25 && (interactions[25][1] == 1))
-                        {
-                            interactionsArray[25]->printLong();         // print long aberforth
-                            interactions[25][1] = false;                // set aberforth unavailable
-                            interactions[26][1] = true;                   // set picture available.
-                        }
-                        else if(parsedResponse->getInteraction() == 26 && (interactions[26][1] == 1))
-                        {
-                            interactionsArray[26]->printLong();         // print long painting.
-                            interactions[26][1] = false;                // set painting unavailable.
-                            roomsVisited[11][1] = true;                 // set Room of Requirement available..
-                        }
                         break;
                     }
                 }
@@ -772,7 +602,6 @@ void Game::Run(){
                             {
                                 std::cout << "The Golden <snitch> is already in your inventory." << std::endl;
                             }
-                            break;
                         }
                     case 1:
                         {
@@ -793,7 +622,6 @@ void Game::Run(){
                             {
                                 std::cout << "The <necklace> is already in your inventory." << std::endl;
                             }
-                            break;
                         }
                     case 2:
                         {
@@ -814,47 +642,6 @@ void Game::Run(){
                             {
                                 std::cout << "The <Sword> of Gryffindor is already in your inventory." << std::endl;
                             }
-                            break;
-                        }
-                    case 3:
-                        {
-                            // if Dracos wand is in default room, is available, and user is in room 7
-                            if((items[3][0] == 7) && (items[3][1] == true) && (currentRoom == 7))
-                            {
-                                itemsArray[3]->printLong();                 // print long
-                                items[3][0] = -1;                           // put wand in inventory
-                                roomsVisited[8][1] = true;                  // Set beach house to available.
-                            }
-                            else if((items[3][0] == currentRoom) && (items[3][1] == true))
-                            {
-                                items[3][0] = -1;
-                                std::cout << "You picked up Draco's <Wand>." << std::endl;
-                            }
-                            else if(items[3][0] == -1)
-                            {
-                                std::cout << "Draco's <Wand> is already in your inventory." << std::endl;
-                            }
-                            break;
-
-                        }
-                    case 5:
-                        {
-                            if((items[4][0] == 9) && (items[4][1] == true) && (currentRoom == 9))
-                            {
-                                itemsArray[4]->printLong();                 // print long chalice
-                                items[4][0] = -1;                           // put chalice in inventory.
-                                roomsVisited[10][1] = true;                 // set hogsmeade to available.
-                            }
-                            else if((items[4][0] == currentRoom) && (items[4][1] == true))
-                            {
-                                items[4][0] = -1;                           // put item in inventory
-                                std::cout << "You picked up the <Chalice> Horcrux." << std::endl;
-                            }
-                            else if(items[4][0] == -1)
-                            {
-                                std::cout << " The <Chalice> Horcrux is already in your inventory." << std::endl;
-                            }
-                            break;
                         }
                     }
 
@@ -873,9 +660,9 @@ void Game::Run(){
                         else if(parsedResponse->getItem() == 2)
                             std::cout << "You dropped the <Sword> of Gryffindor." << std::endl;
                         else if(parsedResponse->getItem() == 3)
-                            std::cout << "You dropped Draco Malfloy's <Wand>." << std::endl;
+                            std::cout << "You dropped Draco Malfloy's <wand>." << std::endl;
                         else if(parsedResponse->getItem() == 4)
-                            std::cout << "You dropped the <Chalice> Horcrux." << std::endl;
+                            std::cout << "You dropped the <chalice> Horcrux." << std::endl;
                         else if(parsedResponse->getItem() == 5)
                             std::cout << "You dropped the <Diadem> of Ravenclaw" << std::endl;
                         else if(parsedResponse->getItem() == 6)
@@ -904,34 +691,12 @@ void Game::Run(){
                     movedRooms = false;
                     break;
                 }
-            case 10:
-                {
-                    interactionsArray[10]->printLong();              // Print long <dolores>
-                    interactions[10][1] = false;                    // Set <dolores> availability to false.
-                    items[1][1] = true;                             // Set Necklace available.
-                    break;
-                }
             case 11:
                 {
                     interactionsArray[11]->printLong();              // Print long <tent>
                     interactions[11][1] = false;                    // Set <tent> availability to false.
                     interactions[12][1] = true;                     // Set <patronus> availability to true.
                     movedRooms = false;
-                    break;
-                }
-            case 20:
-                {
-                    interactionsArray[20]->printLong();             // print long Draco disarm
-                    interactions[20][1] = false;                    // set draco disarm available to false
-                    items[3][1] = true;                             // set wand to available.
-                    break;
-                }
-            case 23:
-                {
-                    interactionsArray[23]->printLong();         // print long banker.
-                    interactions[23][1] = false;                // set banker unavailable.
-                    interactions[24][1] = true;                 // set vault available.
-                    break;
                 }
             }
         }
@@ -978,36 +743,7 @@ bool getIntInput(int& var) {
 // False otherwise.
 bool Game::moveLogicCheck(int nextRoom) const
 {
-    bool checker = true;
-    if((nextRoom == 11) && (currentRoom == 10) && (roomsVisited[11][1] == true))
-    {
-        if(items[0][1] != -1)
-        {
-            std::cout << "You must possess the Golden <Snitch> in your inventory before traveling to Hogwarts." << std::endl;
-            checker = false;
-        }
-        if(items[3][1] != -1)
-        {
-            std::cout << "You must possess Draco's <Wand> in your inventory before traveling to Hogwarts." << std::endl;
-            checker = false;
-        }
-        if(items[4][1] != -1)
-        {
-            std::cout << "You must posses the Chalice Horcrux in your inventory before traveling to Hogwarts." << std::endl;
-            checker = false;
-        }
-
-        if(checker == false)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-
-    }
-    else if((nextRoom == (currentRoom+1)) && (roomsVisited[currentRoom+1][1] == true))
+    if((nextRoom == (currentRoom+1)) && (roomsVisited[currentRoom+1][1] == true))
     {
         return true;
     }
@@ -1025,7 +761,7 @@ bool Game::loadDefault() {
     return loadFromFile("", true);
 }
 
-bool Game::loadFromFile(const std::string& fileName, const bool& isDefault) {
+bool Game::loadFromFile(const std::string& fileName, const bool& isDefault=false) {
 
 //If isDefault==true load default.dat file
 std::ifstream fileStream("data/default.dat", std::ios_base::in);
@@ -1041,11 +777,10 @@ std::ifstream fileStream("data/default.dat", std::ios_base::in);
         if(isDefault==true) {
             //Unable to open default.dat file, probably because it doesn't exist.
             //Create a brand new default.dat file:
-            std::ofstream OFS("data/default.dat", std::ios_base::out | std::ios_base::trunc);
-            OFS<<"0\r\n";
-            OFS<<"0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 1 0 1\r\n";
+            std::ofstream OFS("data/default.dat", std::ios_base::out);
+            OFS<<"0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 1 0 1\r\n";
             OFS<<"1 0 4 0 5 0 7 0 9 0 11 0 14 0 16 0\r\n";
-            OFS<<"0 1 0 0 2 1 3 0 4 1 5 0 6 1 7 0 8 1 9 0 10 0 11 1 12 0 13 0 14 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+            OFS<<"0 1 1 0 2 1 3 0 4 1 5 0 6 1 7 0 8 1 9 0 10 0 11 1 12 0 13 0 14 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
             OFS.close();
 
             //Open newly created default.dat
@@ -1058,14 +793,8 @@ std::ifstream fileStream("data/default.dat", std::ios_base::in);
         }
     }
 
-    if(isDefault==false) {
-        //Skip saveName which is the in the first line inside a file
-        std::string eatVal = "";
-        std::getline(fileStream, eatVal);
-    }
-    int i = 0;
 
-    fileStream>>currentRoom;
+    int i = 0;
 
     //Read rooms
     for (i = 0; i < 17; i++)
@@ -1103,56 +832,12 @@ std::ifstream fileStream("data/default.dat", std::ios_base::in);
     return true;
 }
 
-bool Game::saveGame(const std::string& saveName) {
+bool Game::saveGame() const {
     //Save variables to a file named <playerName>.save
 
-    if(player.name=="") return false; //game not initialized yet
-
-    std::ofstream saveFile("saved/" + player.name + "_" + Data::to_string(player.saves),std::ios_base::out);
+    if(playerName=="") return false; //game not initialized yet
 
 
-    if(!saveFile.is_open()) return false;
-
-    int i = 0;
-    //Store saveName
-    saveFile << saveName << "\r\n";
-
-    //Store current Room
-    saveFile << currentRoom << "\r\n";
-
-    //Read rooms
-    for (i = 0; i < 17; i++)
-    {
-        saveFile << roomsVisited[i][0] << " " << roomsVisited[i][1] << " ";
-    }
-
-
-    saveFile << "\r\n";
-
-    //Read items
-    for(i = 0; i < 8; i++)
-    {
-        saveFile << items[i][0] << " " << items[i][1] << " ";
-    }
-
-    saveFile << "\r\n";
-
-    //Read interactions
-    for(i=0; i<39; i++){
-        saveFile << interactions[i][0] << " " << interactions[i][1] << " ";
-    }
-
-
-    saveFile.close();
-
-
-    player.saves=(player.saves%20)+1;
-
-    //Create a profile -> ReCreate a player profile file
-    //Overwrite the file with a new one with updated "player.saves" variables
-    createProfile(player);
-
-    return true;
 }
 
 // function to print any items that are placed in a room by user.
@@ -1160,14 +845,13 @@ bool Game::saveGame(const std::string& saveName) {
 void Game::printItems(int disreguard)
 {
     int i;
-    //for(i = 0; i < 8; i++)
-    for(i = 0; i < 5; i++)     // set to 3 because only 3 items right now.
+    for(i = 0; i < 8; i++)
     {
         if(i != disreguard)
         {
             if((items[i][0] == currentRoom) && (items[i][1] == true))
             {
-                itemsArray[i]->printPickup();
+                //itemsArray[i]->printShort();
                 /*Change to short non interactive form*/
             }
         }
@@ -1180,12 +864,11 @@ void Game::printItems(int disreguard)
 void Game::printInteractions()
 {
     int i;
-    //for(i = 0; i < 39; i++)
-    for(i = 0; i < 27; i++)     // set to 15 because there are only 15 interactions complete right now.
+    for(i = 0; i < 39; i++)
     {
-        if((interactions[i][0] == currentRoom) && (interactions[i][1] == 1))
+        if((interactions[i][0] == currentRoom) && (interactions[i][1] == true))
         {
-            interactionsArray[i]->printShort();
+            //interactionsArray[i]->printShort();
         }
 
     }
@@ -1196,7 +879,7 @@ void Game::printInteractions()
 // prints out the short or long entrance of the current room.
 void Game::printEntrance(Data::Room *userRoom)
 {
-    if(roomsVisited[currentRoom][0] == 0)
+    if(roomsVisited[currentRoom][0] == false)
     {
         userRoom->printLong();
     }
@@ -1209,22 +892,8 @@ void Game::printEntrance(Data::Room *userRoom)
 // prints out the short exit for the user room if available.
 void Game::printExit(Data::Room *userRoom)
 {
-    if(roomsVisited[currentRoom+1][1] == 1)
+    if(roomsVisited[currentRoom+1][1] == true)
     {
         userRoom->printExitShort();
     }
-}
-
-
-
-//ART
-
-void Game::displayArt() {
-
-	std::ifstream artFile("data/ART.txt", std::ios_base::in);
-	std::string line = "";
-	while (std::getline(artFile, line)) {
-		std::cout << line << std::endl;
-	}
-	artFile.close(); //No need to do closing here, because it will go out of scope.
 }
