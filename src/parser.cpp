@@ -4,12 +4,13 @@
 #include <sstream>
 #include "Response.hpp"
 #include "parser.hpp"
-
+#include <algorithm>
 
 Response Parser::parse(std::string command)
 {
 	Response responseObj;
 	Response* responsePtr = &responseObj;
+	std::transform(command.begin(), command.end(), command.begin(), ::tolower);
 	std::string* strPtr = &command;
 	std::vector<std::string> tokens;
 	std::vector<std::string>* tokensPtr = &tokens;
@@ -134,9 +135,12 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 		if (tokensSize >=2)
 		{
-			if (finalTokens->at(1) == "to") //handles "move door" and "move to door"
+			if (finalTokens->at(1) == "back") //"move back" or "go back"
+			{responsePtr->setRoom(-2);}
+			else if (finalTokens->at(1) == "to") //handles "move door" and "move to door"
 			{index = 2;}
 		}
+
 
 		if(tokensSize >= index+2)
 		{
