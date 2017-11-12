@@ -75,25 +75,34 @@ void Parser::evalCommand(std::vector<std::string>*finalTokens, Response* respons
 {
 	int tokensSize = finalTokens->size();
 	if (tokensSize <=0) //if no tokens, don't try to access them
-	{return;} 
-	if (finalTokens->at(0) == "look" ||
+	{return;}
+	//need to check for "look at" before checking for "look"
+	if (tokensSize >= 3)
+	{
+		if (finalTokens->at(0) == "look" && finalTokens->at(1) == "at")
+		{responsePtr->setCommand(3);}
+		else if (finalTokens->at(0) == "go" || finalTokens->at(0) == "move")
+		{responsePtr->setCommand(2);}
+	}
+ 
+	else if (finalTokens->at(0) == "look" ||
 			finalTokens->at(0) == "help" ||
 			finalTokens->at(0) == "inventory" ||
 			finalTokens->at(0) == "save")
 	{responsePtr->setCommand(1);}
 
-	else if (finalTokens->at(0) == "go")
-	{responsePtr->setCommand(2);}
+	else if (finalTokens->at(0) == "go" || finalTokens->at(0) == "move")
+		{responsePtr->setCommand(2);}
 
-	else if (finalTokens->at(0) == "look" && finalTokens->at(1) == "at")
-	{responsePtr->setCommand(3);}
-
+	
 	else if (finalTokens->at(0) == "take" || finalTokens->at(0) == "drop")
 	{responsePtr->setCommand(4);}
 
-	else if (finalTokens->at(0) == "cast" && finalTokens->at(1) == "spell" && finalTokens->at(2) == "at")
+	else if(tokensSize >= 4)
+	{
+		if (finalTokens->at(0) == "cast" && finalTokens->at(1) == "spell" && finalTokens->at(2) == "at")
 	{responsePtr->setCommand(5);}
-
+	}
 }
 
 void Parser::evalOption(std::vector<std::string>* finalTokens, Response* responsePtr)
@@ -182,8 +191,9 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 	else if (responsePtr->getCommand() == 3) //interaction
 	{
-		if (tokensSize >=2)
+		if (tokensSize <=2)
 		{return;}
+
 		if (finalTokens->at(2) == "potion")
 		{responsePtr->setInteraction(0);}
 		else if (finalTokens->at(2) == "clothes")
