@@ -37,7 +37,7 @@ private:
     int currentRoom; // Holds the current room returned from parsed command
     int roomsVisited[17][2];   // [0-17] room number   [#][0] = Room visited 0 or 1                [#][1] = Room available 0 or 1)
     int items[8][2];            // [0-7] = item number  [#][0] = 0... n-1 Room or -1 is inventory   [#][1] =  item available 0 or 1.
-    int interactions[39][2];    // [0-33] = Interaction [#][0] = 0... n-1 Room                      [#][1] = interaction available 0 or 1
+    int interactions[42][2];    // [0-41] = Interaction [#][0] = 0... n-1 Room                      [#][1] = interaction available 0 or 1
 
     // Phase 1 Logic & Print Functions
     bool moveLogicCheck(int nextRoom) const;        // Checks if game logic is ok to move to next room.
@@ -45,6 +45,12 @@ private:
     void printEntrance(Data::Room *userRoom);       // Prints the correct version of entrance description.
     void printInteractions();                       // prints all short description interactions available in room.
     void printItems(int disreguard);                // prints non-interaction short item descriptions. can pass item number to disregard.
+
+    // Phase 2 Logic & Print Functions
+    void printConnections();                                // Prints all the connections available in phase 2
+    void printRoomData(Data::Room *userRoom, int choice);   // Prints out the selected room data in phase 2.
+    bool moveLogicPhaseTwo(int nextRoom);                   // Checks if game logic is ok to move to a selected room in phase 2.
+    void hardCodedDescriptions(int choice);                 // Extra descriptions not in data files. used for room destructions etc.
 
     int startGame(); //Returns 1=New Game, 2=load Game
 
