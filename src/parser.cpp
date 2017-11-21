@@ -77,8 +77,15 @@ void Parser::evalCommand(std::vector<std::string>*finalTokens, Response* respons
 	int tokensSize = finalTokens->size();
 	if (tokensSize <=0) //if no tokens, don't try to access them
 	{return;}
+
+	if(tokensSize >= 4)
+	{
+		if (finalTokens->at(0) == "cast" && finalTokens->at(1) == "spell" && finalTokens->at(2) == "at")
+	{responsePtr->setCommand(5);}
+	}
+
 	//need to check for "look at" before checking for "look"
-	if (tokensSize >= 3)
+	else if (tokensSize >= 3)
 	{
 		if (finalTokens->at(0) == "look" && finalTokens->at(1) == "at")
 		{responsePtr->setCommand(3);}
@@ -99,11 +106,6 @@ void Parser::evalCommand(std::vector<std::string>*finalTokens, Response* respons
 	else if (finalTokens->at(0) == "take" || finalTokens->at(0) == "drop")
 	{responsePtr->setCommand(4);}
 
-	else if(tokensSize >= 4)
-	{
-		if (finalTokens->at(0) == "cast" && finalTokens->at(1) == "spell" && finalTokens->at(2) == "at")
-	{responsePtr->setCommand(5);}
-	}
 }
 
 void Parser::evalOption(std::vector<std::string>* finalTokens, Response* responsePtr)
@@ -144,21 +146,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 		if(tokensSize >= index+2)
 		{
-			if(finalTokens->at(index) == "harry\'s" && finalTokens->at(index+1) == "house")
-			{responsePtr->setRoom(0);}
-			else if(finalTokens->at(index) == "london" && finalTokens->at(index+1) == "diner")
-			{responsePtr->setRoom(2);}
-			else if(finalTokens->at(index) == "safe" && finalTokens->at(index+1) == "house")
-    		{responsePtr->setRoom(3);}
-			else if(finalTokens->at(index) == "godric\'s" && finalTokens->at(index+1) == "hallow")
-			{responsePtr->setRoom(6);}
-			else if(finalTokens->at(index) == "malfloy" && finalTokens->at(index+1) == "manor")
-			{responsePtr->setRoom(7);}
-			else if(finalTokens->at(index) == "beach" && finalTokens->at(index+1) == "house")
-			{responsePtr->setRoom(8);}
-			else if(finalTokens->at(index) == "gringot" && finalTokens->at(index+1) == "bank")
-			{responsePtr->setRoom(9);}
-			else if(finalTokens->at(index) == "ravenclaw" && finalTokens->at(index+1) == "tower")
+			if(finalTokens->at(index) == "ravenclaw" && finalTokens->at(index+1) == "tower")
 			{responsePtr->setRoom(12);}
 			else if(finalTokens->at(index) == "great" && finalTokens->at(index+1) == "hall")
 			{responsePtr->setRoom(15);}
@@ -185,20 +173,29 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setRoom(5);}
 		else if(finalTokens->at(index) == "hollow")      // added in addition to godrics hallow
         {responsePtr->setRoom(6);}
-		else if(finalTokens->at(index) == "hogsmeade")
+		else if(finalTokens->at(index) == "forrest")
+		{responsePtr->setRoom(7);}
+		else if(finalTokens->at(index) == "beach")
+		{responsePtr->setRoom(8);}
+		else if(finalTokens->at(index) == "bank")
+		{responsePtr->setRoom(9);}
+		else if(finalTokens->at(index) == "dragon")
 		{responsePtr->setRoom(10);}
+		else if(finalTokens->at(index) == "tunnel")
+		{responsePtr->setRoom(11);}
 		else if(finalTokens->at(index) == "courtyard")
 		{responsePtr->setRoom(13);}
 		else if(finalTokens->at(index) == "boathouse")
 		{responsePtr->setRoom(14);}
-		}
-
+		else if(finalTokens->at(index) == "greathall")
+		{responsePtr->setRoom(15);}
+	}
 	else if (responsePtr->getCommand() == 3) //interaction
 	{
 		if (tokensSize <=2)
 		{return;}
 
-		if (finalTokens->at(2) == "potion")
+		if (finalTokens->at(2) == "potion" || finalTokens->at(2) == "polyjuice")
 		{responsePtr->setInteraction(0);}
 		else if (finalTokens->at(2) == "clothes")
 		{responsePtr->setInteraction(1);}
@@ -217,7 +214,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
         {responsePtr->setInteraction(5);}
 		else if (finalTokens->at(2) == "cupboard")
 		{responsePtr->setInteraction(6);}
-		else if ((finalTokens->at(2) == "mundungus") || (finalTokens->at(2) == "Mundungus"))     // added Mundungus
+		else if (finalTokens->at(2) == "mundungus")
 		{responsePtr->setInteraction(7);}
 		else if (finalTokens->at(2) == "toilet")
 		{responsePtr->setInteraction(8);}
@@ -233,7 +230,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setInteraction(13);}
 		else if (finalTokens->at(2) == "horcrux")
 		{responsePtr->setInteraction(14);}
-		else if (finalTokens->at(2) == "graveyard")
+		else if (finalTokens->at(2) == "cemetery") //was graveyard
 		{responsePtr->setInteraction(15);}
 		else if (finalTokens->at(2) == "house")
 		{responsePtr->setInteraction(16);}
@@ -241,12 +238,58 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setInteraction(17);}
 		else if (finalTokens->at(2) == "nagini")
 		{responsePtr->setInteraction(18);}
+		else if (finalTokens->at(2) == "doby")
+		{responsePtr->setInteraction(19);}
+		else if (finalTokens->at(2) == "draco")
+		{responsePtr->setInteraction(20);}
+		else if (finalTokens->at(2) == "grave")
+		{responsePtr->setInteraction(21);}
+		else if (finalTokens->at(2) == "griphook")
+		{responsePtr->setInteraction(22);}
+		else if (finalTokens->at(2) == "banker")
+		{responsePtr->setInteraction(23);}
+		else if (finalTokens->at(2) == "vault")
+		{responsePtr->setInteraction(24);}
+		else if (finalTokens->at(2) == "aberforth")
+		{responsePtr->setInteraction(25);}
+		else if (finalTokens->at(2) == "painting")
+		{responsePtr->setInteraction(26);}
+		else if (finalTokens->at(2) == "students")
+		{responsePtr->setInteraction(27);}
+		else if (finalTokens->at(2) == "ginney")
+		{responsePtr->setInteraction(28);}
+		else if (finalTokens->at(2) == "fire")
+		{responsePtr->setInteraction(29);}
+		else if (finalTokens->at(2) == "luna")
+		{responsePtr->setInteraction(30);}
+		else if (finalTokens->at(2) == "helena")
+		{responsePtr->setInteraction(31);}
+		else if (finalTokens->at(2) == "neville")
+		{responsePtr->setInteraction(32);}
+		else if (finalTokens->at(2) == "nagini")
+		{responsePtr->setInteraction(33);}
+		else if (finalTokens->at(2) == "voldemort") //possible typo both are interaction 32
+		{responsePtr->setInteraction(34);}
+		else if (finalTokens->at(2) == "hide")
+		{responsePtr->setInteraction(35);}
+		else if (finalTokens->at(2) == "snape")
+		{responsePtr->setInteraction(36);}
+		else if (finalTokens->at(2) == "pensive")
+		{responsePtr->setInteraction(37);}
+		else if (finalTokens->at(2) == "headmaster")
+		{responsePtr->setInteraction(38);}
+		else if (finalTokens->at(2) == "mcgonagall")
+		{responsePtr->setInteraction(39);}
+		else if (finalTokens->at(2) == "destiny")
+		{responsePtr->setInteraction(40);}
+		else if (finalTokens->at(2) == "light")
+		{responsePtr->setInteraction(41);}
 
 	}
 
 	else if (responsePtr->getCommand() == 4) //item
 	{
-		if (tokensSize >=1)
+		if (tokensSize <=1)
 		{return;}
 		//set option for take or drop
 		if (finalTokens->at(0) == "take")
@@ -275,7 +318,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 	else if (responsePtr->getCommand() == 5) //spell
 	{
-		if (tokensSize >=3)
+		if (tokensSize <=3)
 		{return;}
 	
 		if(finalTokens->at(3) == "death" && finalTokens->at(4) == "eater")
