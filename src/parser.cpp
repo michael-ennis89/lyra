@@ -173,7 +173,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setRoom(5);}
 		else if(finalTokens->at(index) == "hollow")      // added in addition to godrics hallow
         {responsePtr->setRoom(6);}
-		else if(finalTokens->at(index) == "forrest")
+		else if(finalTokens->at(index) == "forest")
 		{responsePtr->setRoom(7);}
 		else if(finalTokens->at(index) == "beach")
 		{responsePtr->setRoom(8);}
@@ -220,8 +220,8 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setInteraction(8);}
 		else if (finalTokens->at(2) == "elevator")
 		{responsePtr->setInteraction(9);}
-		//if (finalTokens->at(2) == "dolores")      // changed to spell interaction
-		//{responsePtr->setInteraction(10);}
+		else if (finalTokens->at(2) == "dolores")
+		{responsePtr->setInteraction(10);}
 		else if (finalTokens->at(2) == "tent")
 		{responsePtr->setInteraction(11);}
 		else if (finalTokens->at(2) == "patronus")
@@ -238,7 +238,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setInteraction(17);}
 		else if (finalTokens->at(2) == "nagini")
 		{responsePtr->setInteraction(18);}
-		else if (finalTokens->at(2) == "doby")
+		else if (finalTokens->at(2) == "dobby")
 		{responsePtr->setInteraction(19);}
 		else if (finalTokens->at(2) == "draco")
 		{responsePtr->setInteraction(20);}
@@ -332,5 +332,12 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 		else if(finalTokens->at(3) == "tent")
 		{responsePtr->setInteraction(11);}
+
+		else if(finalTokens->at(3) == "draco")
+		{responsePtr->setInteraction(20);}
+
+		else if(finalTokens->at(3) == "banker")
+		{responsePtr->setInteraction(23);}
+
 	}
 }
