@@ -771,7 +771,7 @@ void Game::Run(){
                         }
                         else if(parsedResponse->getInteraction() == 14 && (interactions[14][1] == 1))
                         {
-                            if((items[2][0] == -1) && (items[3][0] == -1))
+                            if((items[1][0] == -1) && (items[2][0] == -1))
                             {
                                 interactionsArray[14]->printLong();              // Print long <horcrux>
                                 interactions[14][1] = false;                    // Set <horcrux> availability to false.
