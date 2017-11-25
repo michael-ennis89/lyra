@@ -1329,9 +1329,9 @@ std::ifstream fileStream("data/default.dat", std::ios_base::in);
             //Create a brand new default.dat file:
             std::ofstream OFS("data/default.dat", std::ios_base::out | std::ios_base::trunc);
             OFS<<"0\r\n";
-            OFS<<"0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 1 0 1 0 1\r\n";
+            OFS<<"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 1 0 1 0 1\r\n";
             OFS<<"1 0 4 0 5 0 7 0 9 0 11 0 14 0 16 0\r\n";
-            //OFS<<"0 1 0 0 2 1 3 0 4 1 5 0 6 1 7 0 8 1 9 0 10 0 11 1 12 0 13 0 14 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"; // Doesn't make sense but might need to revert back.
+          //OFS<<"0 1 0 0 2 1 3 0 4 1 5 0 6 1 7 0 8 1 9 0 10 0 11 1 12 0 13 0 14 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"; // Doesn't make sense but might need to revert back.
             OFS<<"0 1 0 0 1 1 1 0 2 1 2 0 3 1 3 0 4 1 4 0 4 0 5 1 5 0 5 0 5 0 6 1 6 1 6 1 6 0 7 1 7 0 8 1 8 0 9 1 9 0 10 1 10 0 11 0 11 0 11 0 12 0 12 0 13 0 13 0 13 0 14 0 14 0 14 0 15 0 15 0 16 0 16 0";
             OFS.close();
 
@@ -1603,6 +1603,11 @@ bool Game::moveLogicPhaseTwo(int nextRoom)
     {
         std::cout << "Please select a Room to visit." << std::endl;
     }
+    else if(nextRoom <= 16 || nextRoom >= 11)
+    {
+        return true;
+    }
+    return false;
 }
 
 void Game::hardCodedDescriptions(int choice)
