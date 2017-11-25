@@ -92,7 +92,7 @@ void Parser::evalCommand(std::vector<std::string>*finalTokens, Response* respons
 		else if (finalTokens->at(0) == "go" || finalTokens->at(0) == "move")
 		{responsePtr->setCommand(2);}
 	}
- 
+
 	else if (finalTokens->at(0) == "look" ||
 			finalTokens->at(0) == "help" ||
 			finalTokens->at(0) == "inventory" ||
@@ -102,7 +102,7 @@ void Parser::evalCommand(std::vector<std::string>*finalTokens, Response* respons
 	else if (finalTokens->at(0) == "go" || finalTokens->at(0) == "move")
 		{responsePtr->setCommand(2);}
 
-	
+
 	else if (finalTokens->at(0) == "take" || finalTokens->at(0) == "drop")
 	{responsePtr->setCommand(4);}
 
@@ -236,8 +236,8 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setInteraction(16);}
 		else if (finalTokens->at(2) == "bathilda")
 		{responsePtr->setInteraction(17);}
-		else if (finalTokens->at(2) == "nagini")
-		{responsePtr->setInteraction(18);}
+		//else if (finalTokens->at(2) == "nagini") Changed to Spell
+		//{responsePtr->setInteraction(18);}
 		else if (finalTokens->at(2) == "dobby")
 		{responsePtr->setInteraction(19);}
 		else if (finalTokens->at(2) == "draco")
@@ -320,7 +320,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 	{
 		if (tokensSize <=3)
 		{return;}
-	
+
 		if(finalTokens->at(3) == "death" && finalTokens->at(4) == "eater")
 		{responsePtr->setInteraction(5);}
 
@@ -332,6 +332,9 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 		else if(finalTokens->at(3) == "tent")
 		{responsePtr->setInteraction(11);}
+
+		else if (finalTokens->at(3) == "nagini") //Changed from interaction
+		{responsePtr->setInteraction(18);}
 
 		else if(finalTokens->at(3) == "draco")
 		{responsePtr->setInteraction(20);}

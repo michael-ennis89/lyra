@@ -807,15 +807,6 @@ void Game::Run(){
                             interactions[16][1] = false;                // set temp false while in house
                             interactions[18][1] = true;                 // set nagini available
                         }
-                        else if(parsedResponse->getInteraction() == 18 && (interactions[18][1] == 1))
-                        {
-                            interactionsArray[18]->printLong();         // print long nagini
-                            interactions[18][1] = false;                // set nagini unavailable.
-                            interactions[15][1] = true;                 // open up temp closed cemetery
-                            interactions[16][1] = true;                 // open up temp closed childhood house
-                            roomsVisited[7][1] = true;                  // Set malfloy manor to open.
-
-                        }
                         movedRooms = false;
                         break;
                     }
@@ -1254,6 +1245,15 @@ void Game::Run(){
                     movedRooms = false;
                     break;
                 }
+            case 18:
+                {
+                    interactionsArray[18]->printLong();             // print long nagini
+                    interactions[18][1] = false;                    // set nagini unavailable.
+                    interactions[15][1] = true;                     // open up temp closed cemetery
+                    interactions[16][1] = true;                     // open up temp closed childhood house
+                    roomsVisited[7][1] = true;                      // Set malfloy manor to open.
+                    break;
+                }
             case 20:
                 {
                     interactionsArray[20]->printLong();             // print long Draco disarm
@@ -1263,9 +1263,9 @@ void Game::Run(){
                 }
             case 23:
                 {
-                    interactionsArray[23]->printLong();         // print long banker.
-                    interactions[23][1] = false;                // set banker unavailable.
-                    interactions[24][1] = true;                 // set vault available.
+                    interactionsArray[23]->printLong();             // print long banker.
+                    interactions[23][1] = false;                    // set banker unavailable.
+                    interactions[24][1] = true;                     // set vault available.
                     break;
                 }
             }
