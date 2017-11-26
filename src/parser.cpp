@@ -183,6 +183,8 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setRoom(10);}
 		else if(finalTokens->at(index) == "tunnel")
 		{responsePtr->setRoom(11);}
+        else if(finalTokens->at(index) == "requirement")    // added because 3 word doesn't work..
+		{responsePtr->setRoom(11);}
 		else if(finalTokens->at(index) == "courtyard")
 		{responsePtr->setRoom(13);}
 		else if(finalTokens->at(index) == "boathouse")
@@ -268,8 +270,8 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setInteraction(32);}
 		else if (finalTokens->at(2) == "nagini")
 		{responsePtr->setInteraction(33);}
-		else if (finalTokens->at(2) == "voldemort") //possible typo both are interaction 32
-		{responsePtr->setInteraction(34);}
+		//else if (finalTokens->at(2) == "voldemort") //possible typo both are interaction 32
+		//{responsePtr->setInteraction(34);}
 		else if (finalTokens->at(2) == "hide")
 		{responsePtr->setInteraction(35);}
 		else if (finalTokens->at(2) == "snape")
@@ -341,6 +343,9 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 		else if(finalTokens->at(3) == "banker")
 		{responsePtr->setInteraction(23);}
+
+        else if(finalTokens->at(3) == "voldemort")
+		{responsePtr->setInteraction(34);}
 
 	}
 }

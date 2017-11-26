@@ -102,6 +102,7 @@ bool Game::Initialize(int option) {
 
             std::cout << "Hello " << player.name << ". Welcome to the Horcrux!" << std::endl;
             std::cout << "For a list of commands type 'help'" << std::endl;
+            std::cout << std::endl;
 
 
 
@@ -423,7 +424,11 @@ void Game::Run(){
                     }
                 }
                 printInteractions();
-                printItems(5);                           // Dont print long diadem description
+                printItems(5);                              // Dont print diadem pickup
+                if((items[5][1] == true) && (items[5][0] == 11))    // print short diadem description
+                {
+                    itemsArray[5]->printShort();
+                }
                 printConnections();
                 break;
             }
@@ -442,7 +447,7 @@ void Game::Run(){
                     }
                 }
                 printInteractions();
-                printItems(-1);                           // Dont print long diadem description
+                printItems(-1);                             // print all pickups
                 printConnections();
                 break;
             }
@@ -459,10 +464,11 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    printInteractions();
-                    printItems(-1);
-                    printConnections();
+
                 }
+                printInteractions();
+                printItems(-1);
+                printConnections();
                 break;
             }
          case 14:       // Boat House
@@ -478,10 +484,15 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    printInteractions();
-                    printItems(6);                          // dont print snape memories
-                    printConnections();
+
                 }
+                printInteractions();
+                printItems(6);                              // Dont print memories pickup
+                if((items[6][1] == true) && (items[6][0] == 14))    // print short memories description
+                {
+                    itemsArray[6]->printShort();
+                }
+                printConnections();
                 break;
             }
          case 15:       // Great Hall
@@ -497,10 +508,11 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    printInteractions();
-                    printItems(-1);
-                    printConnections();
+
                 }
+                printInteractions();
+                printItems(-1);
+                printConnections();
                 break;
             }
          case 16:       // Enchanted Forest
@@ -508,24 +520,28 @@ void Game::Run(){
                 if(movedRooms == true)
                 {
                     userRoom = new Data::Room("16.room");
-                    if(interactions[40][1] == true)         // if ready to die
+                    if(items[7][1] == true)         // if ready to die
                     {
                         printRoomData(userRoom, 1);         // print regular long entrance.
                     }
-                    else if(interactions[40][1] == false)
+                    else if(items[7][1] == false)
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    printInteractions();
-                    printItems(7);                          // dont print stone.
-                    printConnections();
                 }
+                printInteractions();
+                printItems(7);                              // Dont print stone pickup
+                if((items[7][1] == true) && (items[7][0] == 16))    // print short stone description
+                {
+                    itemsArray[7]->printShort();
+                }
+                printConnections();
                 break;
             }
          }
-        std::cout << ">>";
-        getline( std::cin, userCommand);
-
+        std::cout << ">> " << std::endl;
+        std::cin.clear();
+        std::getline(std::cin, userCommand);
         //parsedResponse = parseCommand(userCommand);
         Response testResponse = myParser.parse(userCommand);
         parsedResponse = &testResponse;
@@ -581,7 +597,7 @@ void Game::Run(){
             {
                 std::string description;
                 std::cout << "Please enter a description for your save." << std::endl;
-                getline( std::cin, description);
+                getline(std::cin, description);
                 bool checkSave;
                 checkSave = saveGame(description);
                 if(checkSave == true)
@@ -613,11 +629,7 @@ void Game::Run(){
                         currentRoom = parsedResponse->getRoom();                // Else set room to room requested.
                     }
 
-                    if(currentRoom != 16)       // move from 16 to courtyard only prints on interaction switch.
-                    {
-                        userRoom->printExitLong();
-                    }
-
+                    userRoom->printExitLong();
                     std::cout << std::endl;
                     delete userRoom;                                            // Delete current room so can reallocate
                     movedRooms = true;                                          // Room moved is true.
@@ -628,7 +640,7 @@ void Game::Run(){
                     movedRooms = false;
                 }
             }
-            if(currentRoom >= 11)
+            else if(currentRoom >= 11)
             {
                 moveLogic = moveLogicPhaseTwo(parsedResponse->getRoom());
                 if(moveLogic == true)
@@ -773,11 +785,12 @@ void Game::Run(){
                         }
                         else if(parsedResponse->getInteraction() == 14 && (interactions[14][1] == 1))
                         {
-                            if((items[2][0] == -1) && (items[3][0] == -1))
+                            if((items[1][0] == -1) && (items[2][0] == -1))
                             {
                                 interactionsArray[14]->printLong();              // Print long <horcrux>
                                 interactions[14][1] = false;                    // Set <horcrux> availability to false.
                                 roomsVisited[6][1] = true;                      // Set Godrics Hallow to Available
+                                items[1][0] = -3;                               // destroy necklace.
                             }
                             else
                             {
@@ -829,7 +842,7 @@ void Game::Run(){
                         {
                             interactionsArray[21]->printLong();         // print long grave
                             interactions[21][1] = false;                // set grave unavailable
-                            interactions[22][2] = true;                  // set griphook available.
+                            interactions[22][1] = true;                  // set griphook available.
                         }
                         else if(parsedResponse->getInteraction() == 22 && (interactions[22][1] == 1))
                         {
@@ -869,6 +882,7 @@ void Game::Run(){
                             interactionsArray[26]->printLong();         // print long painting.
                             interactions[26][1] = false;                // set painting unavailable.
                             roomsVisited[11][1] = true;                 // set Room of Requirement available..
+                            interactions[27][1] = true;                 // set students available.
                         }
                         movedRooms = false;
                         break;
@@ -886,6 +900,7 @@ void Game::Run(){
                             interactionsArray[28]->printLong();         // print long ginney
                             interactions[38][1] = true;                 // set headmaster to true
                             interactions[28][1] = false;                 // set ginney to false
+                            canMove = 1;                                // print exit connections.
                         }
                         else if((parsedResponse->getInteraction() == 29) && (interactions[29][1] == 1))
                         {
@@ -893,8 +908,9 @@ void Game::Run(){
                             {
                                 interactionsArray[29]->printLong();     // print long fire.
                                 items[5][0] = -3;                       // destroy diadem.
-                                interactions[35][1] = true;             // set hid available.
-                                interactions[29][1] = false;             // set fire unavailable.
+                                interactions[35][1] = true;             // set hide available.
+                                interactions[29][1] = false;            // set fire unavailable.
+                                canMove = 1;                            // print connections.
                             }
                             else
                             {
@@ -911,12 +927,14 @@ void Game::Run(){
                             interactionsArray[30]->printLong();         // print long luna
                             interactions[31][1] = true;                 // set helena true
                             interactions[30][1] = false;                // set luna false
+                            canMove = 0;                                // dont print connections.
                         }
                         else if((parsedResponse->getInteraction() == 31) && (interactions[31][1] == 1))
                         {
                             interactionsArray[31]->printLong();         // print long helena
-                            interactions[31][1] = false;                 // set helena false.
+                            interactions[31][1] = false;                // set helena false.
                             items[5][1] = true;                         // set diadem available.
+                            canMove = 1;                                // print connections.
                         }
                         movedRooms = false;
                         break;
@@ -935,13 +953,6 @@ void Game::Run(){
                             interactions[34][1] = true;                 // set voldemort true.
                             interactions[33][1] = false;                // set nagini false
                         }
-                        else if((parsedResponse->getInteraction() == 34) && (interactions[34][1] == 1))
-                        {
-                            interactionsArray[34]->printLong();         // print long voldemort
-                            printRoomData(userRoom, 3);                 // print conclusion
-                            voldermortAlive = false;                    // kill voldemort.
-
-                        }
                         movedRooms = false;
                         break;
                     }
@@ -952,6 +963,7 @@ void Game::Run(){
                             interactionsArray[35]->printLong();         // print long hide.
                             interactions[36][1] = true;                 // set snape available.
                             interactions[35][1] = false;                // set hide unavailable.
+                            canMove = 0;                                // dont print connections.
                         }
                         else if((parsedResponse->getInteraction() == 36) && (interactions[36][1] == 1))
                         {
@@ -962,8 +974,9 @@ void Game::Run(){
                         else if((parsedResponse->getInteraction() == 37) && (interactions[37][1] == 1))
                         {
                             interactionsArray[37]->printLong();         // print long pensive
-                            items[7][1] = true;                          // set ressurection stone available.
+                            items[7][1] = true;                         // set resurrection stone available.
                             interactions[37][1] = false;                // set pensive unavailable.
+                            canMove = 1;                                // print connections
                         }
                         movedRooms = false;
                         break;
@@ -974,13 +987,15 @@ void Game::Run(){
                         {
                             interactionsArray[38]->printLong();         // print long headmaster
                             interactions[39][1] = true;                 // set mcgonogall true
-                            interactions[38][1] = false;                    // set headmaster false.
+                            interactions[38][1] = false;                // set headmaster false.
+                            canMove = 0;                                // dont print connections
                         }
                         else if((parsedResponse->getInteraction() == 39) && (interactions[39][1] == 1))
                         {
                             interactionsArray[39]->printLong();         // print long mcgonogal
                             interactions[30][1] = true;                 // set luna to true.
                             interactions[39][1] = false;                // set mcgonogall to false.
+                            canMove = 1;                                // print connections
                         }
                         movedRooms = false;
                         break;
@@ -993,6 +1008,7 @@ void Game::Run(){
                             interactions[41][1] = true;                 // set light available.
                             interactions[40][1] = false;                // set destiny false.
                             movedRooms = false;
+                            canMove = 0;                                // dont print connections
                         }
                         else if((parsedResponse->getInteraction() == 41) && (interactions[41][1] = 1))
                         {
@@ -1125,6 +1141,7 @@ void Game::Run(){
                                 itemsArray[5]->printLong();                 // print long diadem.
                                 items[5][0] = -1;                           // place diadem in inventory
                                 interactions[29][1] = true;                 // set fire available.
+                                canMove = 0;                                // dont print connections.
                             }
                             else if((items[5][0] == currentRoom) && (items[5][1] == true))
                             {
@@ -1270,6 +1287,14 @@ void Game::Run(){
                     interactions[24][1] = true;                     // set vault available.
                     break;
                 }
+            case 34:
+                {
+                    interactionsArray[34]->printLong();         // print long voldemort
+                    std::cout << std::endl;
+                    printRoomData(userRoom, 3);                 // print conclusion
+                    voldermortAlive = false;                    // kill voldemort.
+                    break;
+                }
             }
         }
 
@@ -1335,7 +1360,7 @@ std::ifstream fileStream("data/default.dat", std::ios_base::in);
             //Create a brand new default.dat file:
             std::ofstream OFS("data/default.dat", std::ios_base::out | std::ios_base::trunc);
             OFS<<"0\r\n";
-            OFS<<"0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 1 0 1 0 1\r\n";
+            OFS<<"0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 1 0 1\r\n";
             OFS<<"1 0 4 0 5 0 7 0 9 0 11 0 14 0 16 0\r\n";
             //OFS<<"0 1 0 0 2 1 3 0 4 1 5 0 6 1 7 0 8 1 9 0 10 0 11 1 12 0 13 0 14 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"; // Doesn't make sense but might need to revert back.
             OFS<<"0 1 0 0 1 1 1 0 2 1 2 0 3 1 3 0 4 1 4 0 4 0 5 1 5 0 5 0 5 0 6 1 6 1 6 1 6 0 7 1 7 0 8 1 8 0 9 1 9 0 10 1 10 0 11 0 11 0 11 0 12 0 12 0 13 0 13 0 13 0 14 0 14 0 14 0 15 0 15 0 16 0 16 0";
@@ -1457,17 +1482,17 @@ bool Game::moveLogicCheck(int nextRoom) const
     bool checker = true;
     if((nextRoom == 11) && (currentRoom == 10) && (roomsVisited[11][1] == true))
     {
-        if(items[0][1] != -1)
+        if(items[0][0] != -1)
         {
             std::cout << "You must possess the Golden <Snitch> in your inventory before traveling to Hogwarts." << std::endl;
             checker = false;
         }
-        if(items[3][1] != -1)
+        if(items[3][0] != -1)
         {
             std::cout << "You must possess Draco's <Wand> in your inventory before traveling to Hogwarts." << std::endl;
             checker = false;
         }
-        if(items[4][1] != -1)
+        if(items[4][0] != -1)
         {
             std::cout << "You must posses the Chalice Horcrux in your inventory before traveling to Hogwarts." << std::endl;
             checker = false;
@@ -1482,6 +1507,10 @@ bool Game::moveLogicCheck(int nextRoom) const
             return true;
         }
 
+    }
+    else if(currentRoom >= 11)
+    {
+        return false;
     }
     else if((nextRoom == (currentRoom+1)) && (roomsVisited[currentRoom+1][1] == true))
     {
@@ -1504,7 +1533,8 @@ void Game::printItems(int disreguard)
 {
     int i;
     //for(i = 0; i < 8; i++)
-    for(i = 0; i < 5; i++)     // set to 3 because only 3 items right now.
+    std::cout << std::endl;
+    for(i = 0; i < 8; i++)     // set to 3 because only 3 items right now.
     {
         if(i != disreguard)
         {
@@ -1524,6 +1554,7 @@ void Game::printItems(int disreguard)
 void Game::printInteractions()
 {
     int i;
+    std::cout << std::endl;
     for(i = 0; i < 42; i++)
     {
         if((interactions[i][0] == currentRoom) && (interactions[i][1] == 1))
@@ -1567,20 +1598,20 @@ void Game::printExit(Data::Room *userRoom)
 // Print items function used in both phase 1 and phase 2
 void Game::printConnections()
 {
-    std::cout << "You look around Hogwarts and  can go to";
-    if((roomsVisited[11][1] == 1) && (currentRoom != 11))
-        std::cout << ", the Room of Requirement";
-    if((roomsVisited[12][1] == 1) && (currentRoom != 12))
-        std::cout << ", Ravenclaw Quarter";
-    if((roomsVisited[13][1] == 1) && (currentRoom != 13))
-        std::cout << ", the Courtyard";
-    if((roomsVisited[14][1] == 1) && (currentRoom != 14))
-        std::cout << ", the Boathouse";
-    if((roomsVisited[15][1] == 1) && (currentRoom != 15))
-        std::cout << ", the Great Hall";
-    if((roomsVisited[16][1] == 1) && (currentRoom != 16))
-        std::cout << ", the Enchanted Forest";
-    std::cout << "." << std::endl;
+        std::cout << "You look around Hogwarts and  can go to";
+        if((roomsVisited[11][1] == 1) && (currentRoom != 11))
+            std::cout << ", the Room of Requirement";
+        if((roomsVisited[12][1] == 1) && (currentRoom != 12))
+            std::cout << ", Ravenclaw Quarter";
+        if((roomsVisited[13][1] == 1) && (currentRoom != 13))
+            std::cout << ", the Courtyard";
+        if((roomsVisited[14][1] == 1) && (currentRoom != 14))
+            std::cout << ", the Boathouse";
+        if((roomsVisited[15][1] == 1) && (currentRoom != 15))
+            std::cout << ", the Great Hall";
+        if((roomsVisited[16][1] == 1) && (currentRoom != 16))
+            std::cout << ", the Enchanted Forest";
+        std::cout << "." << std::endl;
 }
 
 void Game::printRoomData(Data::Room *userRoom, int choice)
@@ -1609,6 +1640,11 @@ bool Game::moveLogicPhaseTwo(int nextRoom)
     {
         std::cout << "Please select a Room to visit." << std::endl;
     }
+    else if((nextRoom <= 16) && (nextRoom >= 11))
+    {
+        return true;
+    }
+    return false;
 }
 
 void Game::hardCodedDescriptions(int choice)

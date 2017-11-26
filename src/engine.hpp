@@ -39,6 +39,7 @@ private:
     int items[8][2];            // [0-7] = item number  [#][0] = 0... n-1 Room or -1 is inventory   [#][1] =  item available 0 or 1.
     int interactions[42][2];    // [0-41] = Interaction [#][0] = 0... n-1 Room                      [#][1] = interaction available 0 or 1
 
+
     // Phase 1 Logic & Print Functions
     bool moveLogicCheck(int nextRoom) const;        // Checks if game logic is ok to move to next room.
     void printExit(Data::Room *userRoom);           // Prints the short exit if available.
