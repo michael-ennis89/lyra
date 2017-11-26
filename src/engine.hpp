@@ -51,6 +51,7 @@ private:
     void printRoomData(Data::Room *userRoom, int choice);   // Prints out the selected room data in phase 2.
     bool moveLogicPhaseTwo(int nextRoom);                   // Checks if game logic is ok to move to a selected room in phase 2.
     void hardCodedDescriptions(int choice);                 // Extra descriptions not in data files. used for room destructions etc.
+    int canMove = 0;                                        // decides whether to print moves available or not.
 
     int startGame(); //Returns 1=New Game, 2=load Game
 

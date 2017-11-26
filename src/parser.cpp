@@ -146,7 +146,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 		if(tokensSize >= index+2)
 		{
-			if(finalTokens->at(index) == "ravenclaw" && finalTokens->at(index+1) == "tower")
+			if(finalTokens->at(index) == "ravenclaw" && finalTokens->at(index+1) == "quarter")
 			{responsePtr->setRoom(12);}
 			else if(finalTokens->at(index) == "great" && finalTokens->at(index+1) == "hall")
 			{responsePtr->setRoom(15);}
