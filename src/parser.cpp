@@ -43,8 +43,6 @@ void Parser::stripPunc(std::string* inputString)
 			} while(position < strSize);
 
 		}
-
-		//std::cout << *inputString << std::endl; //for command line testing. remove
 }
 
 void Parser::tokenizer(std::string* inputString,	std::vector<std::string>* tokens)
@@ -62,12 +60,11 @@ void Parser::tokenizer(std::string* inputString,	std::vector<std::string>* token
 
 void Parser::stripArticles(std::vector<std::string>* tokens, std::vector<std::string>* finalTokens)
 {
-		for(int i = 0; i < tokens->size(); i++)
+		for(unsigned int i = 0; i < tokens->size(); i++)
 		{
 			if (tokens->at(i) != "the" && tokens->at(i) != "a" && tokens->at(i) != "an")
 			{
 				finalTokens->push_back(tokens->at(i));
-				//std::cout << tokens->at(i) << std::endl;
 			}
 		}
 }
@@ -81,7 +78,9 @@ void Parser::evalCommand(std::vector<std::string>*finalTokens, Response* respons
 	if(tokensSize >= 4)
 	{
 		if (finalTokens->at(0) == "cast" && finalTokens->at(1) == "spell" && finalTokens->at(2) == "at")
-	{responsePtr->setCommand(5);}
+		{responsePtr->setCommand(5);}
+		else if (finalTokens->at(0) == "go" || finalTokens->at(0) == "move")
+		{responsePtr->setCommand(2);}
 	}
 
 	//need to check for "look at" before checking for "look"
@@ -100,7 +99,7 @@ void Parser::evalCommand(std::vector<std::string>*finalTokens, Response* respons
 	{responsePtr->setCommand(1);}
 
 	else if (finalTokens->at(0) == "go" || finalTokens->at(0) == "move")
-		{responsePtr->setCommand(2);}
+	{responsePtr->setCommand(2);}
 
 
 	else if (finalTokens->at(0) == "take" || finalTokens->at(0) == "drop")
@@ -135,6 +134,29 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 
 		int index = 1;
 
+
+
+		if(tokensSize >= index+3)
+		{
+
+			if(finalTokens->at(index) == "room" && finalTokens->at(index+1) == "of" && finalTokens->at(index+2) == "requirement")
+			{responsePtr->setRoom(11);}
+
+		}
+
+		if(tokensSize >= index+2)
+		{
+		
+			if(finalTokens->at(index) == "ravenclaw" && finalTokens->at(index+1) == "quarter")
+			{responsePtr->setRoom(12);}
+			else if(finalTokens->at(index) == "boat" && finalTokens->at(index+1) == "house")
+			{responsePtr->setRoom(14);}
+			else if(finalTokens->at(index) == "great" && finalTokens->at(index+1) == "hall")
+			{responsePtr->setRoom(15);}
+			else if(finalTokens->at(index) == "enchanted" && finalTokens->at(index+1) == "forest")
+			{responsePtr->setRoom(16);}
+		}
+
 		if (tokensSize >=2)
 		{
 			if (finalTokens->at(1) == "back") //"move back" or "go back"
@@ -143,24 +165,7 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 			{index = 2;}
 		}
 
-
-		if(tokensSize >= index+2)
-		{
-			if(finalTokens->at(index) == "ravenclaw" && finalTokens->at(index+1) == "quarter")
-			{responsePtr->setRoom(12);}
-			else if(finalTokens->at(index) == "great" && finalTokens->at(index+1) == "hall")
-			{responsePtr->setRoom(15);}
-			else if(finalTokens->at(index) == "enchanted" && finalTokens->at(index+1) == "forest")
-			{responsePtr->setRoom(16);}
-		}
-
-		if(tokensSize >= index+3)
-		{
-			if(finalTokens->at(index) == "room" && finalTokens->at(index+1) == "of" && finalTokens->at(index+2) == "requirement")
-			{responsePtr->setRoom(11);}
-
-		}
-
+		
 		if(finalTokens->at(index) == "motorcycle")  //changed to motorcycle instead of the burrow
 		{responsePtr->setRoom(1);}
 		else if(finalTokens->at(index) == "away")        // added in addition to london diner
@@ -270,8 +275,8 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setInteraction(32);}
 		else if (finalTokens->at(2) == "nagini")
 		{responsePtr->setInteraction(33);}
-		//else if (finalTokens->at(2) == "voldemort") //possible typo both are interaction 32
-		//{responsePtr->setInteraction(34);}
+		else if (finalTokens->at(2) == "voldemort") //possible typo both are interaction 32
+		{responsePtr->setInteraction(34);}
 		else if (finalTokens->at(2) == "hide")
 		{responsePtr->setInteraction(35);}
 		else if (finalTokens->at(2) == "snape")
