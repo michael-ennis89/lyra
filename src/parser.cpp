@@ -135,6 +135,11 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		int index = 1;
 
 
+		if (tokensSize >=2)
+		{
+			if (finalTokens->at(1) == "to") //handles "move door" and "move to door"
+			{index = 2;}
+		}
 
 		if(tokensSize >= index+3)
 		{
@@ -161,8 +166,6 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{
 			if (finalTokens->at(1) == "back") //"move back" or "go back"
 			{responsePtr->setRoom(-2);}
-			else if (finalTokens->at(1) == "to") //handles "move door" and "move to door"
-			{index = 2;}
 		}
 
 		
@@ -275,8 +278,8 @@ void Parser::evalOption(std::vector<std::string>* finalTokens, Response* respons
 		{responsePtr->setInteraction(32);}
 		else if (finalTokens->at(2) == "nagini")
 		{responsePtr->setInteraction(33);}
-		else if (finalTokens->at(2) == "voldemort") //possible typo both are interaction 32
-		{responsePtr->setInteraction(34);}
+		//else if (finalTokens->at(2) == "voldemort") //possible typo both are interaction 32
+		//{responsePtr->setInteraction(34);}
 		else if (finalTokens->at(2) == "hide")
 		{responsePtr->setInteraction(35);}
 		else if (finalTokens->at(2) == "snape")
