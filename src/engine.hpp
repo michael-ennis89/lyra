@@ -9,6 +9,7 @@
 #include<stdexcept>
 #include<limits>
 
+#include "ColorLib.hpp"
 #include "GameData.hpp"
 #include "Response.hpp"
 #include "parser.hpp"
@@ -66,6 +67,11 @@ private:
 
 	//Display ART
 	void displayArt();
+	void displayAvada();
+	void displayExpelliarmus();
+
+	//GRAPHICS HANDLER
+	graph_lib::Screen hScreen;
 };
 
 

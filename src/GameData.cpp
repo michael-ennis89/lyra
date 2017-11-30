@@ -1,7 +1,31 @@
 #include "GameData.hpp"
 
+const short CHAR_LIMIT = 90; //CHARS PER LINE IN CONSOLE!
+
+//TEXT WRAP
 void printV(const std::string& str) {
-    std::cout << str << std::endl;
+	std::istringstream iss(str);
+	int count = 0;
+	std::string word = "";
+	while (std::getline(iss, word, ' ')) {
+
+		count += word.size() + 1;
+
+		if (count >= CHAR_LIMIT) {
+			std::cout << std::endl;
+			if (count == CHAR_LIMIT) {
+				std::cout << " ";
+			}
+
+			count = word.size();
+
+		}
+
+		std::cout << word << " ";
+	}
+
+
+	std::cout << std::endl;
 }
 void Data::GameData::printLong() const {
     printV(long_desc);

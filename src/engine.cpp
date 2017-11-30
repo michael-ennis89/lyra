@@ -8,44 +8,44 @@ Game::Game() {
 }
 
 Game::~Game() {
-    for(Data::Item* e:itemsArray){
-        delete e;
-    }
-    itemsArray.clear();
-    for(Data::Interaction* e:interactionsArray) {
-        delete e;
-    }
-    interactionsArray.clear();
+	for (Data::Item* e : itemsArray) {
+		delete e;
+	}
+	itemsArray.clear();
+	for (Data::Interaction* e : interactionsArray) {
+		delete e;
+	}
+	interactionsArray.clear();
 
-    std::cout << "Game closed!\n";
+	std::cout << "Game closed!\n";
 }
 
-std::vector<Player> getProfiles(bool displayProfiles=false) {
-    std::vector<Player> res;
+std::vector<Player> getProfiles(bool displayProfiles = false) {
+	std::vector<Player> res;
 
-    std::ifstream fileStream("data/profiles.data");
+	std::ifstream fileStream("data/profiles.data");
 
-    if(!fileStream.good()) {
-        std::cout << "File profiles.data is missing from data directory!\n";
-        return {};
-    }
-    int cnt = 0;
-        Player playerDisplay;
-    while(fileStream>>playerDisplay.name){
-        if(displayProfiles)
-        std::cout << (++cnt) << ". " << playerDisplay.name << std::endl;
+	if (!fileStream.good()) {
+		std::cout << "File profiles.data is missing from data directory!\n";
+		return {};
+	}
+	int cnt = 0;
+	Player playerDisplay;
+	while (fileStream >> playerDisplay.name) {
+		if (displayProfiles)
+			std::cout << (++cnt) << ". " << playerDisplay.name << std::endl;
 
-        res.push_back(playerDisplay);
-    }
+		res.push_back(playerDisplay);
+	}
 
-    return res;
+	return res;
 }
 
 void createProfile(const Player& playerName, bool editAllProfilesFile = true) {
 
-    std::ofstream profileFile("profiles/" + playerName.name + ".profile", std::ios_base::out | std::ios_base::trunc);
-    profileFile << playerName.name << " " << playerName.saves;
-    profileFile.close();
+	std::ofstream profileFile("profiles/" + playerName.name + ".profile", std::ios_base::out | std::ios_base::trunc);
+	profileFile << playerName.name << " " << playerName.saves;
+	profileFile.close();
 
 	if (editAllProfilesFile) {
 		std::ofstream AllProfilesFile("data/profiles.data", std::ios_base::out | std::ios_base::app);
@@ -56,174 +56,183 @@ void createProfile(const Player& playerName, bool editAllProfilesFile = true) {
 }
 
 bool Game::Initialize(int option) {
-    try{
 
-        //Initialize all interactions and items
-        itemsArray=Data::getItems(8);
-        interactionsArray=Data::getInteractions(42);
+	try {
 
-        //Get profiles from file.
-        std::vector<Player> profiles;
-        profiles = getProfiles(false);
+		//Initialize all interactions and items
+		itemsArray = Data::getItems(8);
+		interactionsArray = Data::getInteractions(42);
 
-        if (option==1) {
-            //NEW GAME
-            //Load data from a default file
-            bool brk = true;
-            while(true) {
-                std::cout << "Please enter new profile name(no whitespaces): ";
-                std::cin>>player.name;
-                std::cin.get();
-                std::cin.sync();
-                //std::cin.ignore(std::string, '\n');
-                brk=true;
-                for(const char& c:player.name) {
-                    if(std::isalpha(c)==false && std::isdigit(c)==false){
-                        brk=false;
-                        break;
-                    }
-                }
+		//Get profiles from file.
+		std::vector<Player> profiles;
+		profiles = getProfiles(false);
 
-                if(brk) {
-                    //Check if it is a duplicate
-                    for(const Player& p: profiles) {
-                        if (p.name==player.name) {
-                            std::cout << "Profile " << p.name << " already exists!" << std::endl;
-                            brk=false;
-                            break;
-                        }
-                    }
-                    if(brk)
-                    break;
-                }
-            }
+		if (option == 1) {
+			//NEW GAME
+			//Load data from a default file
+			bool brk = true;
+			while (true) {
+				std::cout << "Please enter new profile name(no whitespaces): ";
+				std::cin >> player.name;
+				std::cin.get();
+				std::cin.sync();
+				//std::cin.ignore(std::string, '\n');
+				brk = true;
+				for (const char& c : player.name) {
+					if (std::isalpha(c) == false && std::isdigit(c) == false) {
+						brk = false;
+						break;
+					}
+				}
 
-            createProfile(player); //Create a file in profiles for a new player
+				if (brk) {
+					//Check if it is a duplicate
+					for (const Player& p : profiles) {
+						if (p.name == player.name) {
+							std::cout << "Profile " << p.name << " already exists!" << std::endl;
+							brk = false;
+							break;
+						}
+					}
+					if (brk)
+						break;
+				}
+			}
 
-            std::cout << "Hello " << player.name << ". Welcome to the Horcrux!" << std::endl;
-            std::cout << "For a list of commands type 'help'" << std::endl;
-            std::cout << std::endl;
+			createProfile(player); //Create a file in profiles for a new player
 
-
-
-            return loadDefault();
-        } else if (option==2) {
-            LOAD_GAME:
-            std::cout << "\nLIST OF AVAILABLE PROFILES: " << std::endl;
-            profiles = getProfiles(true);
-            //LOAD GAME
-            //Load from a save file
-
-            //Display all available save files
-            std::string inputName = "";
-
-            std::cout << profiles.size()+1 << ". <--- Go Back" << std::endl;
-            if (profiles.empty()) {
-                std::cout << "File profiles.data is either missing or there are no profiles yet!" << std::endl;
-                return Initialize(startGame());
-            }
-
-            int choice = 0;
-            while(true) {
-                std::cout << "Enter a profile number: ";
-                if(getIntInput(choice)==true) {
-
-                    if (choice==profiles.size()+1) {
-                        return Initialize(startGame());
-                    }
-                    if(choice>0 && choice<=profiles.size()) {
-                        player=profiles[choice-1];
-                        std::cout << "Selected profile: " << player.name;
-                        break;
-                    } else {
-                        std::cout << "Input was out of bounds, please enter a number between 1 and " << profiles.size() << std::endl;
-                    }
-                } else {
-                    std::cout << "Bad input! Please enter a valid number" << std::endl;
-                }
-            }
+			std::cout << "Hello " << player.name << ". Welcome to the Horcrux!" << std::endl;
+			std::cout << "For a list of commands type 'help'" << std::endl;
+			std::cout << std::endl;
 
 
-            //Read from a .profile file
-            std::ifstream profileFileStream("profiles/" + player.name + ".profile", std::ios_base::in);
 
-            if(!profileFileStream.is_open()) {
-                std::ofstream profileOFS("profiles/" + player.name + ".profile", std::ios_base::out);
-                profileOFS<<player.name << " 0";
-                player.saves = 0;
-                profileOFS.close();
-            }else{
-                profileFileStream>>player.name>>player.saves;
-                profileFileStream.close();
-            }
+			return loadDefault();
+		}
+		else if (option == 2) {
+		LOAD_GAME:
+			std::cout << "\nLIST OF AVAILABLE PROFILES: " << std::endl;
+			profiles = getProfiles(true);
+			//LOAD GAME
+			//Load from a save file
 
+			//Display all available save files
+			std::string inputName = "";
 
-            //GET SAVE FILENAME BY playerName.
-            std::string saveFileName = "";
+			std::cout << profiles.size() + 1 << ". <--- Go Back" << std::endl;
+			if (profiles.empty()) {
+				std::cout << "File profiles.data is either missing or there are no profiles yet!" << std::endl;
+				return Initialize(startGame());
+			}
 
-            //Check for existing save files for selected profile
+			int choice = 0;
+			while (true) {
+				std::cout << "Enter a profile number: ";
+				if (getIntInput(choice) == true) {
 
-            std::ifstream iStreamFiles;
-            int foundFiles = 0;
-            std::vector<std::string> saveFiles;
-
-            std::cout<<std::endl<<std::endl;
-            std::cout << "Available saved games for " << player.name << ": " <<std::endl;
-
-            for(int i=0; foundFiles<player.saves && i<20; i++){
-                saveFileName = "saved/" + player.name + "_" + Data::to_string(i) + ".save";
-                iStreamFiles.open(saveFileName);
-
-                if(iStreamFiles.is_open()) {
-                    std::string title = "";
-                    std::getline(iStreamFiles, title);
-                    std::cout << ++foundFiles << ". " << title << std::endl;
-                    saveFiles.push_back(saveFileName);
-                    iStreamFiles.close();
-                }
-            }
-
-            std::cout << foundFiles+1 << ". <--- Go Back" << std::endl;
-
-
-            std::cout << "\nSelect the file to load a game from: ";
-
-            if (foundFiles>0) {
-
-                while(true) {
-
-                    int input = 0;
-                    if(getIntInput(input)==true) {
-                        if (input == foundFiles+1) {
-                            goto LOAD_GAME;
-                        }
-                        if (input>0 && input<foundFiles+1) {
-                            saveFileName=saveFiles[input-1];
-                            std::cout << "Selected: " << saveFiles[input-1] << std::endl;
-                            break;
-                        }
-
-                    }
-
-                }
-
-            } else {
-
-                std::cout << "No save files for this profile!" << std::endl;
-            }
+					if (choice == profiles.size() + 1) {
+						return Initialize(startGame());
+					}
+					if (choice>0 && choice <= profiles.size()) {
+						player = profiles[choice - 1];
+						std::cout << "Selected profile: " << player.name;
+						break;
+					}
+					else {
+						std::cout << "Input was out of bounds, please enter a number between 1 and " << profiles.size() << std::endl;
+					}
+				}
+				else {
+					std::cout << "Bad input! Please enter a valid number" << std::endl;
+				}
+			}
 
 
-            //TODO
-            return loadFromFile(saveFileName);
-        }
+			//Read from a .profile file
+			std::ifstream profileFileStream("profiles/" + player.name + ".profile", std::ios_base::in);
 
-    } catch (std::exception& ex) {
-        std::cout << "An error occured: " << ex.what() << std::endl;
-        return false;
-    }
+			if (!profileFileStream.is_open()) {
+				std::ofstream profileOFS("profiles/" + player.name + ".profile", std::ios_base::out);
+				profileOFS << player.name << " 0";
+				player.saves = 0;
+				profileOFS.close();
+			}
+			else {
+				profileFileStream >> player.name >> player.saves;
+				profileFileStream.close();
+			}
 
-    return true;
+
+			//GET SAVE FILENAME BY playerName.
+			std::string saveFileName = "";
+
+			//Check for existing save files for selected profile
+
+			std::ifstream iStreamFiles;
+			int foundFiles = 0;
+			std::vector<std::string> saveFiles;
+
+			std::cout << std::endl << std::endl;
+			std::cout << "Available saved games for " << player.name << ": " << std::endl;
+
+			for (int i = 0; foundFiles<player.saves && i<20; i++) {
+				saveFileName = "saved/" + player.name + "_" + Data::to_string(i) + ".save";
+				iStreamFiles.open(saveFileName);
+
+				if (iStreamFiles.is_open()) {
+					std::string title = "";
+					std::getline(iStreamFiles, title);
+					std::cout << ++foundFiles << ". " << title << std::endl;
+					saveFiles.push_back(saveFileName);
+					iStreamFiles.close();
+				}
+			}
+
+			std::cout << foundFiles + 1 << ". <--- Go Back" << std::endl;
+
+
+			std::cout << "\nSelect the file to load a game from: ";
+
+			if (foundFiles>0) {
+
+				while (true) {
+
+					int input = 0;
+					if (getIntInput(input) == true) {
+						if (input == foundFiles + 1) {
+							goto LOAD_GAME;
+						}
+						if (input>0 && input<foundFiles + 1) {
+							saveFileName = saveFiles[input - 1];
+							std::cout << "Selected: " << saveFiles[input - 1] << std::endl;
+							break;
+						}
+
+					}
+
+				}
+
+			}
+			else {
+
+				std::cout << "No save files for this profile!" << std::endl;
+				return loadDefault();
+			}
+
+
+			//TODO
+			return loadFromFile(saveFileName);
+		}
+
+	}
+	catch (std::exception& ex) {
+		std::cout << "An error occured: " << ex.what() << std::endl;
+		return false;
+	}
+
+	return true;
 }
+
 
 void Game::Run(){
     displayArt();
@@ -1492,7 +1501,7 @@ bool Game::saveGame(const std::string& saveName) {
     saveFile.close();
 
 
-    player.saves=(player.saves%20)+1;
+    player.saves=(player.saves%20);
 
     //Create a profile -> ReCreate a player profile file
     //Overwrite the file with a new one with updated "player.saves" variables
@@ -1692,12 +1701,29 @@ void Game::hardCodedDescriptions(int choice)
 
 //ART
 
-void Game::displayArt() {
-
-	std::ifstream artFile("data/ART.txt", std::ios_base::in);
+void outputAllLines(const std::string& fileName) {
+	std::ifstream artFile(fileName, std::ios_base::in);
 	std::string line = "";
 	while (std::getline(artFile, line)) {
 		std::cout << line << std::endl;
 	}
-	artFile.close(); //No need to do closing here, because it will go out of scope.
+	artFile.close(); //No need to do closing here, because it will go out of scope. But, good practice
+}
+
+void Game::displayArt() {
+	outputAllLines("data/ART.txt");
+}
+
+void Game::displayAvada() {
+	hScreen.setFontColor(graph_lib::Color::GREEN);
+	outputAllLines("data/AVADA.txt");
+	//reset color
+	hScreen.resetTextColor();
+}
+
+void Game::displayExpelliarmus() {
+	hScreen.setFontColor(graph_lib::Color::BLUE);
+	outputAllLines("data/EXPELIARMUS.txt");
+	//reset color
+	hScreen.resetTextColor();
 }
