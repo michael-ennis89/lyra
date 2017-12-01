@@ -72,6 +72,7 @@ private:
 	void displayImperio();
 	void displayErecto();
 	void displayExpelliarmus();
+	void displayCredits();
 
 };
 
