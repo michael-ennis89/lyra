@@ -268,7 +268,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("0.room");
                     printEntrance(userRoom);
-                    roomsVisited[0][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -281,7 +280,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("1.room");
                     printEntrance(userRoom);
-                    roomsVisited[1][0] = true;
                 }
                 printInteractions();
                 printItems(0);
@@ -298,7 +296,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("2.room");
                     printEntrance(userRoom);
-                    roomsVisited[2][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -311,7 +308,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("3.room");
                     printEntrance(userRoom);
-                    roomsVisited[3][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -324,7 +320,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("4.room");
                     printEntrance(userRoom);
-                    roomsVisited[4][0] = true;
                 }
                 printInteractions();
                 printItems(1);
@@ -341,7 +336,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("5.room");
                     printEntrance(userRoom);
-                    roomsVisited[5][0] = true;
                 }
                 printInteractions();
                 printItems(2);
@@ -358,7 +352,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("6.room");
                     printEntrance(userRoom);
-                    roomsVisited[6][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -371,7 +364,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("7.room");
                     printEntrance(userRoom);
-                    roomsVisited[7][0] = true;
                 }
                 printInteractions();
                 printItems(3);
@@ -388,7 +380,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("8.room");
                     printEntrance(userRoom);
-                    roomsVisited[8][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -401,7 +392,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("9.room");
                     printEntrance(userRoom);
-                    roomsVisited[9][0] = true;
                 }
                 printInteractions();
                 printItems(4);
@@ -418,7 +408,6 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("10.room");
                     printEntrance(userRoom);
-                    roomsVisited[10][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -442,7 +431,6 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    roomsVisited[11][0] = true;
                 }
                 printInteractions();
                 printItems(5);                              // Dont print diadem pickup
@@ -466,7 +454,6 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    roomsVisited[12][0] = true;
                 }
                 printInteractions();
                 printItems(-1);                             // print all pickups
@@ -486,7 +473,7 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    roomsVisited[13][0] = true;
+
                 }
                 printInteractions();
                 printItems(-1);
@@ -506,7 +493,7 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    roomsVisited[14][0] = true;
+
                 }
                 printInteractions();
                 printItems(6);                              // Dont print memories pickup
@@ -530,7 +517,7 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    roomsVisited[15][0] = true;
+
                 }
                 printInteractions();
                 printItems(-1);
@@ -550,7 +537,6 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-                    roomsVisited[16][0] = true;
                 }
                 printInteractions();
                 printItems(7);                              // Dont print stone pickup
@@ -562,16 +548,9 @@ void Game::Run(){
                 break;
             }
          }
-
         std::cout << ">> " << std::endl;
-
-        if (std::cin.fail())
-        {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        }
-
-       std::getline(std::cin, userCommand);
+        std::cin.clear();
+        std::getline(std::cin, userCommand);
         //parsedResponse = parseCommand(userCommand);
         Response testResponse = myParser.parse(userCommand);
         parsedResponse = &testResponse;
@@ -590,8 +569,6 @@ void Game::Run(){
             }
             else if(parsedResponse->getOption() == 2)       // help Command
             {
-                std::cout << std::endl;
-                std::cout << "--------------------------------------------------------------------------------" << std::endl;
                 std::cout << "Available Commands" << std::endl;
                 std::cout << "'look'                        -- Repeats room entrance. " << std::endl;
                 std::cout << "'look at <interaction>'       -- Inspects bracketed words. " << std::endl;
@@ -601,14 +578,11 @@ void Game::Run(){
                 std::cout << "'cast spell at <interaction>' -- Casts a spell at the interaction. " << std::endl;
                 std::cout << "'go <location>'               -- Moves to the target location. " << std::endl;
                 std::cout << "'save'                        -- Saves the game" << std::endl;
-                std::cout << "--------------------------------------------------------------------------------" << std::endl;
-                std::cout << std::endl;
             }
             else if(parsedResponse->getOption() == 3)       // inventory Command
             {
-                std::cout << std::endl;
                 std::cout << "Current Inventory" << std::endl;
-                std::cout << "----------------------------------------" << std::endl;
+                std::cout << "--------------------" << std::endl;
                 if(items[0][0] == -1)
                     std::cout << "Golden <Snitch>" << std::endl;
                 if(items[1][0] == -1)
@@ -625,13 +599,12 @@ void Game::Run(){
                     std::cout << "Snape's <Memories>" << std::endl;
                 if(items[7][0] == -1)
                     std::cout << "Resurrection <stone>" << std::endl;
-                std::cout << "----------------------------------------" << std::endl;
-                std::cout << std::endl;
+
+                std::cout << "--------------------" << std::endl;
             }
             else if(parsedResponse->getOption() == 4)                       // save
             {
                 std::string description;
-                std::cout << std::endl;
                 std::cout << "Please enter a description for your save." << std::endl;
                 getline(std::cin, description);
                 bool checkSave;
@@ -639,7 +612,6 @@ void Game::Run(){
                 if(checkSave == true)
                 {
                     std::cout << "Game Saved" << std::endl;
-                    std::cout << std::endl;
                     voldermortAlive = false;
                 }
                 else
