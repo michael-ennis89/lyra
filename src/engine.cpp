@@ -233,7 +233,6 @@ bool Game::Initialize(int option) {
 
 void Game::Run(){
     displayArt();
-    displayCredits();
 
     if (Initialize(startGame()) == false) {
         std::cout << "Unable to start a game!\n";
@@ -560,9 +559,10 @@ void Game::Run(){
                 break;
             }
          }
-        std::cout << ">> " << std::endl;
+        std::cout << ">> ";
         std::cin.clear();
         std::getline(std::cin, userCommand);
+        std::cout << std::endl;
         //parsedResponse = parseCommand(userCommand);
         Response testResponse = myParser.parse(userCommand);
         parsedResponse = &testResponse;
@@ -1048,6 +1048,7 @@ void Game::Run(){
                         else if((parsedResponse->getInteraction() == 41) && (interactions[41][1] = 1))
                         {
                             interactionsArray[41]->printLong();         // print long light
+                            std::cout << std::endl;
                             interactions[32][1] = true;                 // set neville available.
                             items[7][0] = -3;                           // destroy stone.
                             printRoomData(userRoom, 3);                 // print long exit
@@ -1577,8 +1578,6 @@ bool Game::moveLogicCheck(int nextRoom) const
 void Game::printItems(int disreguard)
 {
     int i;
-    //for(i = 0; i < 8; i++)
-    std::cout << std::endl;
     for(i = 0; i < 8; i++)     // set to 3 because only 3 items right now.
     {
         if(i != disreguard)
@@ -1605,6 +1604,7 @@ void Game::printInteractions()
         if((interactions[i][0] == currentRoom) && (interactions[i][1] == 1))
         {
             interactionsArray[i]->printShort();
+            std::cout << std::endl;
             if((interactions[34][0] == currentRoom) && (interactions[34][1] == 1))
             {
                 displayAvada();
