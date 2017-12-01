@@ -7,7 +7,7 @@ void printV(const std::string& str) {
 	std::istringstream iss(str);
 	int count = 0;
 	std::string word = "";
-	while (std::getline(iss, word, ' ')) {
+	while (iss>>word) {
 
 		count += word.size() + 1;
 
@@ -15,6 +15,7 @@ void printV(const std::string& str) {
 			std::cout << std::endl;
 			if (count == CHAR_LIMIT) {
 				std::cout << " ";
+				count++;
 			}
 
 			count = word.size();

@@ -71,10 +71,15 @@ bool Game::Initialize(int option) {
             //Load data from a default file
             bool brk = true;
             while(true) {
-                std::cout << "Please enter new profile name(no whitespaces): ";
-                std::cin>>player.name;
-                std::cin.get();
-                std::cin.sync();
+
+                std::cout << "Please enter new profile name: ";
+                std::string pName;
+                getline(std::cin, pName);
+                pName.erase(std::remove(pName.begin(),pName.end(),' '),pName.end());
+                player.name = pName;
+                //std::cin.get();
+                //std::cin.sync();
+
                 //std::cin.ignore(std::string, '\n');
                 brk=true;
                 for(const char& c:player.name) {
@@ -210,6 +215,7 @@ bool Game::Initialize(int option) {
             } else {
 
                 std::cout << "No save files for this profile!" << std::endl;
+                return loadDefault();
             }
 
 
@@ -227,6 +233,7 @@ bool Game::Initialize(int option) {
 
 void Game::Run(){
     displayArt();
+    displayCredits();
 
     if (Initialize(startGame()) == false) {
         std::cout << "Unable to start a game!\n";
@@ -1498,8 +1505,12 @@ bool Game::saveGame(const std::string& saveName) {
 
     saveFile.close();
 
+    if (player.saves>=19) {
+        player.saves=20;
 
-    player.saves=(player.saves%20)+1;
+    } else {
+        player.saves=(player.saves%20)+1;
+    }
 
     //Create a profile -> ReCreate a player profile file
     //Overwrite the file with a new one with updated "player.saves" variables
@@ -1743,3 +1754,6 @@ void Game::displayExpelliarmus(){
 void Game::displayCredits(){
     outputAllLines("data/CREDITS.txt");
 }
+
+
+

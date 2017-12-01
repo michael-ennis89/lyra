@@ -9,6 +9,9 @@
 #include<stdexcept>
 #include<limits>
 
+#include<cctype>
+#include<algorithm>
+
 #include "GameData.hpp"
 #include "Response.hpp"
 #include "parser.hpp"
