@@ -175,7 +175,7 @@ bool Game::Initialize(int option) {
             std::cout<<std::endl<<std::endl;
             std::cout << "Available saved games for " << player.name << ": " <<std::endl;
 
-            for(int i=0; foundFiles<player.saves && i<20; i++){
+            for(int i=0; i<20; i++){//for(int i=0; foundFiles<player.saves && i<20; i++){
                 saveFileName = "saved/" + player.name + "_" + Data::to_string(i) + ".save";
                 iStreamFiles.open(saveFileName);
 
@@ -1506,7 +1506,7 @@ bool Game::saveGame(const std::string& saveName) {
     saveFile.close();
 
     if (player.saves>=19) {
-       //NOTHING HERE
+        player.saves = 0;
     } else {
         player.saves=(player.saves%20)+1;
     }
