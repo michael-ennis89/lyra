@@ -128,10 +128,10 @@ bool Game::Initialize(int option) {
                 std::cout << "Enter a profile number: ";
                 if(getIntInput(choice)==true) {
 
-                    if (choice==profiles.size()+1) {
+                    if (choice ==  (int)profiles.size()+1) {
                         return Initialize(startGame());
                     }
-                    if(choice>0 && choice<=profiles.size()) {
+                    if(choice>0 && choice <=  (int)profiles.size()) {
                         player=profiles[choice-1];
                         std::cout << "Selected profile: " << player.name;
                         break;
@@ -259,6 +259,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("0.room");
                     printEntrance(userRoom);
+                    roomsVisited[0][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -271,6 +272,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("1.room");
                     printEntrance(userRoom);
+                    roomsVisited[1][0] = true;
                 }
                 printInteractions();
                 printItems(0);
@@ -287,6 +289,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("2.room");
                     printEntrance(userRoom);
+                    roomsVisited[2][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -299,6 +302,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("3.room");
                     printEntrance(userRoom);
+                    roomsVisited[3][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -311,6 +315,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("4.room");
                     printEntrance(userRoom);
+                    roomsVisited[4][0] = true;
                 }
                 printInteractions();
                 printItems(1);
@@ -327,6 +332,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("5.room");
                     printEntrance(userRoom);
+                    roomsVisited[5][0] = true;
                 }
                 printInteractions();
                 printItems(2);
@@ -343,6 +349,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("6.room");
                     printEntrance(userRoom);
+                    roomsVisited[6][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -355,6 +362,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("7.room");
                     printEntrance(userRoom);
+                    roomsVisited[7][0] = true;
                 }
                 printInteractions();
                 printItems(3);
@@ -371,6 +379,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("8.room");
                     printEntrance(userRoom);
+                    roomsVisited[8][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -383,6 +392,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("9.room");
                     printEntrance(userRoom);
+                    roomsVisited[9][0] = true;
                 }
                 printInteractions();
                 printItems(4);
@@ -399,6 +409,7 @@ void Game::Run(){
                 {
                     userRoom = new Data::Room("10.room");
                     printEntrance(userRoom);
+                    roomsVisited[10][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -422,6 +433,7 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
+                    roomsVisited[11][0] = true;
                 }
                 printInteractions();
                 printItems(5);                              // Dont print diadem pickup
@@ -445,6 +457,7 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
+                    roomsVisited[12][0] = true;
                 }
                 printInteractions();
                 printItems(-1);                             // print all pickups
@@ -464,7 +477,7 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-
+                    roomsVisited[13][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -484,7 +497,7 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-
+                    roomsVisited[14][0] = true;
                 }
                 printInteractions();
                 printItems(6);                              // Dont print memories pickup
@@ -508,7 +521,7 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
-
+                    roomsVisited[15][0] = true;
                 }
                 printInteractions();
                 printItems(-1);
@@ -528,6 +541,7 @@ void Game::Run(){
                     {
                         printRoomData(userRoom, 0);         // print short entrance.
                     }
+                    roomsVisited[16][0] = true;
                 }
                 printInteractions();
                 printItems(7);                              // Dont print stone pickup
@@ -572,8 +586,9 @@ void Game::Run(){
             }
             else if(parsedResponse->getOption() == 3)       // inventory Command
             {
+                std::cout << std::endl;
                 std::cout << "Current Inventory" << std::endl;
-                std::cout << "--------------------" << std::endl;
+                std::cout << "----------------------------------------" << std::endl;
                 if(items[0][0] == -1)
                     std::cout << "Golden <Snitch>" << std::endl;
                 if(items[1][0] == -1)
@@ -591,11 +606,13 @@ void Game::Run(){
                 if(items[7][0] == -1)
                     std::cout << "Resurrection <stone>" << std::endl;
 
-                std::cout << "--------------------" << std::endl;
+                std::cout << "----------------------------------------" << std::endl;
+                std::cout << std::endl;
             }
             else if(parsedResponse->getOption() == 4)                       // save
             {
                 std::string description;
+                std::cout << std::endl;
                 std::cout << "Please enter a description for your save." << std::endl;
                 getline(std::cin, description);
                 bool checkSave;
@@ -604,6 +621,7 @@ void Game::Run(){
                 {
                     std::cout << "Game Saved" << std::endl;
                     voldermortAlive = false;
+                    std::cout << std::endl;
                 }
                 else
                 {
@@ -617,8 +635,15 @@ void Game::Run(){
         {
             if(currentRoom <= 10)
             {
+
                 moveLogic = moveLogicCheck(parsedResponse->getRoom());
-                if(moveLogic == true)
+                if((parsedResponse->getRoom() == -2) && ((currentRoom >= 1) && (currentRoom <= 10)))
+                {
+                    currentRoom = currentRoom -1;
+                    delete userRoom;
+                    movedRooms = true;
+                }
+                else if(moveLogic == true)
                 {
                     if(parsedResponse->getRoom() == -2)
                     {
@@ -1005,10 +1030,13 @@ void Game::Run(){
                         if((parsedResponse->getInteraction() == 40) && (interactions[40][1] == 1))
                         {
                             interactionsArray[40]->printLong();         // print long destiny.
+                            std::cout << std::endl;
+                            displayAvada();
                             interactions[41][1] = true;                 // set light available.
                             interactions[40][1] = false;                // set destiny false.
                             movedRooms = false;
                             canMove = 0;                                // dont print connections
+                            dontPrint = 1;
                         }
                         else if((parsedResponse->getInteraction() == 41) && (interactions[41][1] = 1))
                         {
@@ -1243,6 +1271,7 @@ void Game::Run(){
             {
             case 5:
                 {
+                    displayStupefy();
                     interactionsArray[5]->printLong();               // Print long <deatheater>
                     interactions[5][1] = false;                     // Set <deatheater> availability to false.
                     roomsVisited[3][1] = true;                      // Set Safe House available.
@@ -1251,6 +1280,7 @@ void Game::Run(){
                 }
             case 10:
                 {
+                    displayStupefy();
                     interactionsArray[10]->printLong();              // Print long <dolores>
                     interactions[10][1] = false;                    // Set <dolores> availability to false.
                     items[1][1] = true;                             // Set Necklace available.
@@ -1258,6 +1288,7 @@ void Game::Run(){
                 }
             case 11:
                 {
+                    displayErecto();
                     interactionsArray[11]->printLong();              // Print long <tent>
                     interactions[11][1] = false;                    // Set <tent> availability to false.
                     interactions[12][1] = true;                     // Set <patronus> availability to true.
@@ -1275,6 +1306,7 @@ void Game::Run(){
                 }
             case 20:
                 {
+                    displayExpelliarmus();
                     interactionsArray[20]->printLong();             // print long Draco disarm
                     interactions[20][1] = false;                    // set draco disarm available to false
                     items[3][1] = true;                             // set wand to available.
@@ -1282,6 +1314,7 @@ void Game::Run(){
                 }
             case 23:
                 {
+                    displayImperio();
                     interactionsArray[23]->printLong();             // print long banker.
                     interactions[23][1] = false;                    // set banker unavailable.
                     interactions[24][1] = true;                     // set vault available.
@@ -1289,9 +1322,11 @@ void Game::Run(){
                 }
             case 34:
                 {
+                    displayExpelliarmus();
                     interactionsArray[34]->printLong();         // print long voldemort
                     std::cout << std::endl;
                     printRoomData(userRoom, 3);                 // print conclusion
+                    displayCredits();
                     voldermortAlive = false;                    // kill voldemort.
                     break;
                 }
@@ -1560,6 +1595,10 @@ void Game::printInteractions()
         if((interactions[i][0] == currentRoom) && (interactions[i][1] == 1))
         {
             interactionsArray[i]->printShort();
+            if((interactions[34][0] == currentRoom) && (interactions[34][1] == 1))
+            {
+                displayAvada();
+            }
         }
 
     }
@@ -1598,9 +1637,11 @@ void Game::printExit(Data::Room *userRoom)
 // Print items function used in both phase 1 and phase 2
 void Game::printConnections()
 {
-        std::cout << "You look around Hogwarts and  can go to";
+    if(dontPrint != 1)
+    {
+        std::cout << "You look around Hogwarts and  can go to:" << std::endl;
         if((roomsVisited[11][1] == 1) && (currentRoom != 11))
-            std::cout << ", the Room of Requirement";
+            std::cout << "The Room of Requirement";
         if((roomsVisited[12][1] == 1) && (currentRoom != 12))
             std::cout << ", Ravenclaw Quarter";
         if((roomsVisited[13][1] == 1) && (currentRoom != 13))
@@ -1612,6 +1653,8 @@ void Game::printConnections()
         if((roomsVisited[16][1] == 1) && (currentRoom != 16))
             std::cout << ", the Enchanted Forest";
         std::cout << "." << std::endl;
+    }
+
 }
 
 void Game::printRoomData(Data::Room *userRoom, int choice)
@@ -1639,6 +1682,11 @@ bool Game::moveLogicPhaseTwo(int nextRoom)
     if(nextRoom == -2)
     {
         std::cout << "Please select a Room to visit." << std::endl;
+        return false;
+    }
+    else if(dontPrint == 1)
+    {
+        return false;
     }
     else if((nextRoom <= 16) && (nextRoom >= 11))
     {
@@ -1651,9 +1699,9 @@ void Game::hardCodedDescriptions(int choice)
 {
     if(choice == 0) // Room of Requirement New Hardcoded entrance after 31.Interaction completed.
     {
-        std::cout << "You meet back up with Ron and Hermione. They inform you that they destroyed the chalice Horcrux;";
-        std::cout << " however, you could already feel it inside you earlier. You head to the Room of Requirement and ";
-        std::cout << "begin to look around for the diadem." << std::endl;
+        std::cout << "You meet back up with Ron and Hermione. They inform you that they destroyed the chalice" << std::endl;
+        std::cout << "Horcrux however, you could already feel it inside you earlier. You head to the Room of" << std::endl;
+        std::cout << "Requirement and begin to look around for the diadem." << std::endl;
     }
     else if(choice == 1) // Room of Requirement New Hardcoded exit after 29.Interaction completed.
     {
@@ -1662,14 +1710,36 @@ void Game::hardCodedDescriptions(int choice)
 }
 
 
+
 //ART
 
-void Game::displayArt() {
-
-	std::ifstream artFile("data/ART.txt", std::ios_base::in);
+void outputAllLines(const std::string& fileName) {
+	std::ifstream artFile(fileName, std::ios_base::in);
 	std::string line = "";
 	while (std::getline(artFile, line)) {
 		std::cout << line << std::endl;
 	}
-	artFile.close(); //No need to do closing here, because it will go out of scope.
+	artFile.close(); //No need to do closing here, because it will go out of scope. But, good practice
+}
+
+void Game::displayArt(){
+    outputAllLines("data/ART.txt");
+}
+void Game::displayAvada(){
+    outputAllLines("data/AVADA.txt");
+}
+void Game::displayStupefy(){
+    outputAllLines("data/STUPEFY.txt");
+}
+void Game::displayImperio(){
+    outputAllLines("data/IMPERIO.txt");
+}
+void Game::displayErecto(){
+    outputAllLines("data/ERECTO.txt");
+}
+void Game::displayExpelliarmus(){
+    outputAllLines("data/EXPELIARMUS.txt");
+}
+void Game::displayCredits(){
+    outputAllLines("data/CREDITS.txt");
 }

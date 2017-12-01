@@ -1,7 +1,31 @@
 #include "GameData.hpp"
 
+const short CHAR_LIMIT = 90; //CHARS PER LINE IN CONSOLE!
+
+//TEXT WRAP
 void printV(const std::string& str) {
-    std::cout << str << std::endl;
+	std::istringstream iss(str);
+	int count = 0;
+	std::string word = "";
+	while (std::getline(iss, word, ' ')) {
+
+		count += word.size() + 1;
+
+		if (count >= CHAR_LIMIT) {
+			std::cout << std::endl;
+			if (count == CHAR_LIMIT) {
+				std::cout << " ";
+			}
+
+			count = word.size();
+
+		}
+
+		std::cout << word << " ";
+	}
+
+
+	std::cout << std::endl;
 }
 void Data::GameData::printLong() const {
     printV(long_desc);
@@ -91,7 +115,8 @@ std::string Data::to_string(unsigned int num) {
 std::vector<Data::Item*> Data::getItems(const int& NumberOfItems){
     std::vector<Data::Item*> items;
 
-    for(size_t i=0; i<NumberOfItems; i++){
+    int i;
+    for(i=0; i<NumberOfItems; i++){
         Data::Item* item = new Data::Item(Data::to_string(i) + ".item");
 		items.push_back(item);
     }
@@ -102,7 +127,8 @@ std::vector<Data::Item*> Data::getItems(const int& NumberOfItems){
 std::vector<Data::Interaction*> Data::getInteractions(const int& NumberOfInteractions){
     std::vector<Data::Interaction*> interactions;
 
-    for(size_t i=0; i<NumberOfInteractions; i++){
+    int i;
+    for(i=0; i<NumberOfInteractions; i++){
         Data::Interaction* interaction = new Data::Interaction(Data::to_string(i) + ".interaction");
         interactions.push_back(interaction);
     }
