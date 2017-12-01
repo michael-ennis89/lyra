@@ -1506,8 +1506,7 @@ bool Game::saveGame(const std::string& saveName) {
     saveFile.close();
 
     if (player.saves>=19) {
-        player.saves=20;
-
+       //NOTHING HERE
     } else {
         player.saves=(player.saves%20)+1;
     }
